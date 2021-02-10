@@ -9,6 +9,8 @@ public class Enemy : MonoBehaviour
     private string word;        //表示する単語
     private float timeLimit;    //攻撃までの制限時間
     private int wordIndex;
+    private float startTime;
+    private bool didAttack;
     
     // Start is called before the first frame update
     void Start()
@@ -19,7 +21,12 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Time.time - startTime >= timeLimit && didAttack == false)
+        {
+            Debug.Log("攻撃");
+            didAttack = true;
+            Escape();
+        }
     }
     public void Initialize(uint _id, int _hp, string _word, float _timeLimit)
     {
@@ -28,29 +35,38 @@ public class Enemy : MonoBehaviour
         word = _word;
         timeLimit = _timeLimit;
         wordIndex = 0;
+        didAttack = false;
     }
 
-    private void MoveToFrontOfPlayer() { }
+    private void MoveToFrontOfPlayer()
+    {
+        startTime = Time.time;
+    }
+
+    private void Escape()
+    {
+        Destroy(this.gameObject);
+    }
     
 
-    public void InputLetter(uint id, char c)
-    {
-        if(id == Id)
+    public bool InputLetter(char c)
+    {        
+        if(word[wordIndex] == c)
         {
-            if(word[wordIndex++] == c)
-            {
-                //文字を黒くする(見えなくする)
-            }
-            else
-            {
-                //文字を赤くする
-            }
-            if(wordIndex == word.Length - 1)
-            {
-                //攻撃を受ける
-            }
+            //文字を黒くする(見えなくする)
         }
+        else
+        {
+            //文字を赤くする
+        }
+        wordIndex++;
+        if(wordIndex == word.Length - 1)
+        {
+            //攻撃を受ける
+            return true;
+        }
+        return false;    
     }
-
-    private void UpdateWord() { }
+    
+    
 }
