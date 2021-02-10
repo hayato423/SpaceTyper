@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -11,11 +12,12 @@ public class Enemy : MonoBehaviour
     private int wordIndex;
     private float startTime;
     private bool didAttack;
+    private Text wordText;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+           
     }
 
     // Update is called once per frame
@@ -33,9 +35,13 @@ public class Enemy : MonoBehaviour
         Id = _id;
         hp = _hp;
         word = _word;
+        GameObject textObj = GameObject.Find("WordText");
+        wordText = textObj.GetComponent<Text>();
+        wordText.text = word;        
         timeLimit = _timeLimit;
         wordIndex = 0;
-        didAttack = false;
+        didAttack = false;        
+        MoveToFrontOfPlayer();
     }
 
     private void MoveToFrontOfPlayer()

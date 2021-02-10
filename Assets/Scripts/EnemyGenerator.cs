@@ -19,6 +19,7 @@ public class EnemyGenerator : MonoBehaviour
         enemyTimeLimit = 3.0f;
         idNum = 1;
         phase = 1;
+        ReadFile();
     }
 
     // Update is called once per frame
@@ -43,7 +44,7 @@ public class EnemyGenerator : MonoBehaviour
     private void GenerateEnemy()
     {
         int wordIndex =  Random.Range(0,words.Length);
-        GameObject enemy = Instantiate(enemy_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        GameObject enemy = Instantiate(enemy_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
         enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,words[wordIndex],enemyTimeLimit);
     }
 
