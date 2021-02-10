@@ -13,16 +13,18 @@ public class Enemy : MonoBehaviour
     private float startTime;
     private bool didAttack;
     private Text wordText;
+    private Slider hpSlider;
+    private Slider timeSlider;
     
     // Start is called before the first frame update
     void Start()
-    {
-           
+    {                
     }
 
     // Update is called once per frame
     void Update()
     {
+        timeSlider.value = (timeLimit - (Time.time - startTime)) / timeLimit;
         if(Time.time - startTime >= timeLimit && didAttack == false)
         {
             Debug.Log("攻撃");
@@ -35,9 +37,10 @@ public class Enemy : MonoBehaviour
         Id = _id;
         hp = _hp;
         word = _word;
-        GameObject textObj = GameObject.Find("WordText");
-        wordText = textObj.GetComponent<Text>();
-        wordText.text = word;        
+        GameObject canvas = transform.Find("Canvas").gameObject;
+        wordText = canvas.transform.Find("WordText").gameObject.GetComponent<Text>();
+        timeSlider = canvas.transform.Find("Time").gameObject.GetComponent<Slider>();
+        wordText.text = word;
         timeLimit = _timeLimit;
         wordIndex = 0;
         didAttack = false;        
