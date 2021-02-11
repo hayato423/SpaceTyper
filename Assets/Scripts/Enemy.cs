@@ -46,13 +46,24 @@ public class Enemy : MonoBehaviour
         word = _word;
         charStatus = new int[word.Length];
         GameObject canvas = transform.Find("Canvas").gameObject;
-        wordText = canvas.transform.Find("WordText").gameObject.GetComponent<Text>();
+        GameObject wordObj = canvas.transform.Find("WordText").gameObject;
+        wordText = wordObj.gameObject.GetComponent<Text>();
         timeSlider = canvas.transform.Find("Time").gameObject.GetComponent<Slider>();
         hpSlider = canvas.transform.Find("HP").gameObject.GetComponent<Slider>();
         wordText.text = word;
         timeLimit = _timeLimit;
         wordIndex = 0;
         didAttack = false;        
+        //文字数が8文字以上の場合、パネルを拡張
+        if(wordText.text.Length > 8)
+        {
+            int addWidth = (wordText.text.Length - 8) * 20;
+            wordObj.GetComponent<RectTransform>().sizeDelta = new Vector2(wordObj.GetComponent<RectTransform>().rect.width+addWidth, wordObj.GetComponent<RectTransform>().rect.height);
+            GameObject panel = canvas.transform.Find("Panel").gameObject;
+            panel.GetComponent<RectTransform>().sizeDelta = new Vector2(panel.GetComponent<RectTransform>().rect.width + addWidth, panel.GetComponent<RectTransform>().rect.height);
+            GameObject frame = canvas.transform.Find("Frame").gameObject;
+            frame.GetComponent<RectTransform>().sizeDelta = new Vector2(frame.GetComponent<RectTransform>().rect.width + addWidth, frame.GetComponent<RectTransform>().rect.height);
+        }
         MoveToFrontOfPlayer();
     }
 
