@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
     public uint Id { get; private set; }
-    private int hp;     //体力
+    private float maxHp;
+    private float hp;     //体力
     private string word;        //表示する単語
     private float timeLimit;    //攻撃までの制限時間
     private int wordIndex;
@@ -16,15 +18,18 @@ public class Enemy : MonoBehaviour
     private Text wordText;
     private Slider hpSlider;
     private Slider timeSlider;
+    private GameObject EM;
     
     // Start is called before the first frame update
     void Start()
     {                
+        EM = GameObject.Find("EnemyManager");
     }
 
     // Update is called once per frame
     void Update()
     {
+        hpSlider.value = hp / maxHp;
         timeSlider.value = (timeLimit - (Time.time - startTime)) / timeLimit;
         if(Time.time - startTime >= timeLimit && didAttack == false)
         {
@@ -33,15 +38,17 @@ public class Enemy : MonoBehaviour
             Escape();
         }
     }
-    public void Initialize(uint _id, int _hp, string _word, float _timeLimit)
+    public void Initialize(uint _id, float _hp, string _word, float _timeLimit)
     {
         Id = _id;
         hp = _hp;
+        maxHp = _hp;
         word = _word;
         charStatus = new int[word.Length];
         GameObject canvas = transform.Find("Canvas").gameObject;
         wordText = canvas.transform.Find("WordText").gameObject.GetComponent<Text>();
         timeSlider = canvas.transform.Find("Time").gameObject.GetComponent<Slider>();
+        hpSlider = canvas.transform.Find("HP").gameObject.GetComponent<Slider>();
         wordText.text = word;
         timeLimit = _timeLimit;
         wordIndex = 0;
@@ -56,7 +63,7 @@ public class Enemy : MonoBehaviour
 
     private void Escape()
     {
-        GameObject.Find("EnemyManager").GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
+        EM.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
         Destroy(this.gameObject);
     }
     
@@ -97,5 +104,29 @@ public class Enemy : MonoBehaviour
         return false;    
     }
     
+
+    public void ReceiveDamage(float attackPoint)
+    {        
+        int SuccessCount = charStatus.Count(v => v == 1);        
+        float attackScore = attackPoint * ((float)SuccessCount / word.Length);
+        //Debug.Log(attackScore);
+        hp -= attackScore;
+        if (hp <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            UpdateWord();
+        }
+    }
+
+    void UpdateWord()
+    {
+        word = EM.GetComponent<EnemyGenerator>().GetWord();
+        wordText.text = word;
+        charStatus = new int[word.Length];
+        wordIndex = 0;
+    }
     
 }

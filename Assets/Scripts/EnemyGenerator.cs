@@ -21,6 +21,7 @@ public class EnemyGenerator : MonoBehaviour
         enemyTimeLimit = 60.0f;
         idNum = 1;
         phase = 1;
+        enemyHp = 3;
         ReadFile();
     }
 
@@ -46,10 +47,10 @@ public class EnemyGenerator : MonoBehaviour
     //敵を生成する
     private void GenerateEnemy()
     {
-        int wordIndex =  Random.Range(0,words.Length);
         float x = Random.Range(-10f, 10f);
+        string word = GetWord();
         GameObject enemy = Instantiate(enemy_prefab, new Vector3(x, 0f, 0f), Quaternion.identity) as GameObject;
-        enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,words[wordIndex],enemyTimeLimit);
+        enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,word,enemyTimeLimit);
     }
 
     //テキストファイル読み込み
@@ -59,5 +60,11 @@ public class EnemyGenerator : MonoBehaviour
         textAsset = Resources.Load("EnglishWords", typeof(TextAsset)) as TextAsset;
         string textLines = textAsset.text;
         words = textLines.Split('\n');
+    }
+
+    public string GetWord()
+    {
+        int wordIndex = Random.Range(0, words.Length);        
+        return words[wordIndex];
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private int attackPoint;
     private bool isInputValid;
     private int targetListIndex;
     private uint targetEnemyId;
@@ -44,6 +45,7 @@ public class Player : MonoBehaviour
         isInputValid = true;
         targetListIndex = 0;
         targetEnemyId = 1;
+        attackPoint = 1;
     }
 
     // Update is called once per frame
@@ -88,10 +90,19 @@ public class Player : MonoBehaviour
                 {
                     if (targetEnemyId == enemy.GetComponent<Enemy>().Id)
                     {
-                        enemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
+                        bool IsAttackValid = enemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
+                        if(IsAttackValid == true)
+                        {
+                            Attack(enemy);
+                        }
                     }
                 }
             }
         }
+    }
+
+    void Attack(GameObject e)
+    {        
+        e.GetComponent<Enemy>().ReceiveDamage(attackPoint);
     }
 }
