@@ -12,11 +12,13 @@ public class EnemyGenerator : MonoBehaviour
     private float enemyTimeLimit;
     private int enemyHp;
     private int phase;
+    public List<uint> enemyIds;
     // Start is called before the first frame update
     void Start()
     {
+        enemyIds = new List<uint>();
         startTime = Time.time;
-        enemyTimeLimit = 3.0f;
+        enemyTimeLimit = 60.0f;
         idNum = 1;
         phase = 1;
         ReadFile();
@@ -28,6 +30,7 @@ public class EnemyGenerator : MonoBehaviour
         if(Time.time - startTime > interval)
         {
             GenerateEnemy();
+            enemyIds.Add(idNum);
             idNum++;
             startTime = Time.time;
         }
@@ -44,7 +47,8 @@ public class EnemyGenerator : MonoBehaviour
     private void GenerateEnemy()
     {
         int wordIndex =  Random.Range(0,words.Length);
-        GameObject enemy = Instantiate(enemy_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
+        float x = Random.Range(-10f, 10f);
+        GameObject enemy = Instantiate(enemy_prefab, new Vector3(x, 0f, 0f), Quaternion.identity) as GameObject;
         enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,words[wordIndex],enemyTimeLimit);
     }
 
