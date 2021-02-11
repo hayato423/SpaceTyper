@@ -78,7 +78,8 @@ public class Enemy : MonoBehaviour
         else
         {
             //文字を赤くする
-            charStatus[wordIndex] = -1;            
+            charStatus[wordIndex] = -1;
+            word = word.Remove(wordIndex, 1).Insert(wordIndex, inputedChar.ToString());
         }
         wordText.text = "";
         for(int i = 0; i < word.Length; i++)

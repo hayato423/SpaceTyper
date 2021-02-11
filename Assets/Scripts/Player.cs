@@ -108,7 +108,7 @@ public class Player : MonoBehaviour
             {
                 if (targetEnemyId == enemy.GetComponent<Enemy>().Id)
                 {
-                    targetObj.transform.position = enemy.transform.position;
+                    targetObj.transform.position = enemy.transform.position + new Vector3(0f,0f,-0.78f);
                     return enemy;
                 }
             }

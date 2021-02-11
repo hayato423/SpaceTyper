@@ -18,10 +18,10 @@ public class EnemyGenerator : MonoBehaviour
     {
         enemyIds = new List<uint>();
         startTime = Time.time;
-        enemyTimeLimit = 60.0f;
+        enemyTimeLimit = 5.0f;
         idNum = 1;
         phase = 1;
-        enemyHp = 3;
+        enemyHp = 1;
         ReadFile();
     }
 
