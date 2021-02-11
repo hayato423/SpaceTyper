@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private uint targetEnemyId;
     [SerializeField] GameObject targetObj;
     private GameObject targetedEnemy;
+    private GameObject[] enemys;
+    List<uint> enemyIdList;    
     Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
         {KeyCode.A, 'a' },
@@ -43,58 +45,40 @@ public class Player : MonoBehaviour
     void Start()
     {
         isInputValid = true;
-        targetListIndex = 0;
-        targetEnemyId = 1;
+        targetListIndex = -1;
+        targetEnemyId = 0;
         attackPoint = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        enemyIdList = GameObject.Find("EnemyManager").GetComponent<EnemyGenerator>().enemyIds;
+        if (enemyIdList.Contains(targetEnemyId) == false)
+        {
+            targetedEnemy = ChangeRockonTarget();
+        }
     }
 
     private void OnGUI()
     {
-        Event e = Event.current;
+        Event e = Event.current;        
         if(isInputValid && e.type == EventType.KeyDown && e.type != EventType.KeyUp && e.keyCode != KeyCode.None
            && !Input.GetMouseButton(0) && !Input.GetMouseButton(1)  && !Input.GetMouseButton(2))
-        {
-            GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        {            
             if (e.keyCode == KeyCode.Tab)
-            {                
-                List<uint> enemyIdList = GameObject.Find("EnemyManager").GetComponent<EnemyGenerator>().enemyIds;                
-                if (enemyIdList.Count > 0)
-                {
-                    if (targetListIndex == enemyIdList.Count - 1)
-                    {
-                        targetListIndex = 0;
-                    }
-                    else
-                    {
-                        targetListIndex++;
-                    }
-                    targetEnemyId = enemyIdList[targetListIndex];
-                    foreach (GameObject enemy in enemys)
-                    {
-                        if (targetEnemyId == enemy.GetComponent<Enemy>().Id)
-                        {
-                            targetObj.transform.position = enemy.transform.position;
-                        }
-                    }
-                }                
+            {
+                targetedEnemy = ChangeRockonTarget();            
             }
             else
-            {
-                foreach (GameObject enemy in enemys)
+            {                
+                if(targetedEnemy != null)
                 {
-                    if (targetEnemyId == enemy.GetComponent<Enemy>().Id)
+                    bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
+                    if (IsAttackValid == true)
                     {
-                        bool IsAttackValid = enemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
-                        if(IsAttackValid == true)
-                        {
-                            Attack(enemy);
-                        }
+                        Attack(targetedEnemy);
                     }
                 }
             }
@@ -104,5 +88,31 @@ public class Player : MonoBehaviour
     void Attack(GameObject e)
     {        
         e.GetComponent<Enemy>().ReceiveDamage(attackPoint);
+    }
+
+
+    GameObject ChangeRockonTarget()
+    {        
+        if (enemyIdList.Count > 0)
+        {
+            if (targetListIndex+1 > enemyIdList.Count - 1)
+            {
+                targetListIndex = 0;
+            }
+            else
+            {
+                targetListIndex++;
+            }
+            targetEnemyId = enemyIdList[targetListIndex];
+            foreach (GameObject enemy in enemys)
+            {
+                if (targetEnemyId == enemy.GetComponent<Enemy>().Id)
+                {
+                    targetObj.transform.position = enemy.transform.position;
+                    return enemy;
+                }
+            }
+        }
+        return null;
     }
 }

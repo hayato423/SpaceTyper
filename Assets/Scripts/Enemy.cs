@@ -113,6 +113,7 @@ public class Enemy : MonoBehaviour
         hp -= attackScore;
         if (hp <= 0)
         {
+            EM.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
             Destroy(this.gameObject);
         }
         else
