@@ -8,30 +8,118 @@ public class Enemy : MonoBehaviour
 {
     public uint Id { get; private set; }
     private float maxHp;
-    private float hp;     //体力
-    private string word;        //表示する単語
-    private float timeLimit;    //攻撃までの制限時間
+    private float hp;
+    private string displayWord;
+    private float timeLimitUpToAttack;
     private int wordIndex;
     private float startTime;
     private bool didAttack;
     private int[] charStatus;   //-1:ミス, 1:正解, 0:未決定
+    private int detectedI = 0;
+    private int detectedJ = 0;
+    public bool isActive { get; private set; }
+    private Vector3 willMovePosition;
+    private Vector3 movingDirectionVector;
     private Text wordText;
     private Slider hpSlider;
     private Slider timeSlider;
     private GameObject EM;
+    public struct CandidatePosition
+    {
+        public bool canUse;
+        public Vector3 position;
+
+        public CandidatePosition(bool _canUse, Vector3 _position)
+        {
+            canUse = _canUse;
+            position = _position;
+        }
+    }
+    static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];
+
+    static Enemy()
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                candidatePositins[i, j] = new CandidatePosition(true, new Vector3(j * 3 - 6,i * -3 + 3, 9));
+            }
+        }
+    }
     
+
     // Start is called before the first frame update
     void Start()
-    {                
+    {        
         EM = GameObject.Find("EnemyManager");
+
+        //生成された座標の象限の中から，最も遠い空いているところを配置する位置に決定する
+        Vector3 generatedPosition = this.gameObject.transform.position;
+        int beginY = 0, endY = 0, beginX = 0, endX = 0;        
+        if(generatedPosition.x < 0 && generatedPosition.y > 0)
+        {
+            beginX = 0; endX = 3;
+            beginY = 0; endY = 2;            
+        }
+        if (generatedPosition.x > 0 && generatedPosition.y > 0)
+        {
+            beginX = 2; endX = 5;
+            beginY = 0; endY = 2;            
+        }
+        if (generatedPosition.x < 0 && generatedPosition.y < 0)
+        {
+            beginX = 0; endX = 2;
+            beginY = 1; endY = 3;            
+        }
+        if (generatedPosition.x > 0 && generatedPosition.y < 0)
+        {
+            beginX = 2; endX = 5;
+            beginY = 1; endY = 3;            
+        }
+
+        float maxDistance = -1f;        
+        for (int i = beginY; i < endY; i++)
+        {
+            for (int j = beginX; j < endX; j++)
+            {                
+                float distance = (generatedPosition - candidatePositins[i, j].position).sqrMagnitude;
+                if (distance > maxDistance && candidatePositins[i,j].canUse == true)
+                {
+                    maxDistance = distance;
+                    detectedI = i;
+                    detectedJ = j;
+                }
+            }
+        }
+        if(maxDistance == -1) Destroy(this.gameObject);
+        willMovePosition = candidatePositins[detectedI, detectedJ].position;
+        candidatePositins[detectedI, detectedJ].canUse = false;
+        movingDirectionVector = (willMovePosition - transform.position).normalized;
     }
 
     // Update is called once per frame
     void Update()
     {
+        //指定された座標まで移動する
+        const float moveSpeedms = 5.0f;
+        const float toleranceDistanceSquare = 0.01f;
+        if((transform.position - willMovePosition).sqrMagnitude > toleranceDistanceSquare)
+        {
+            transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
+        }
+        else if(isActive == false)
+        {
+            startTime = Time.time;
+            isActive = true;
+        }
+
+        //HPバー，残り時間バーを更新
         hpSlider.value = hp / maxHp;
-        timeSlider.value = (timeLimit - (Time.time - startTime)) / timeLimit;
-        if(Time.time - startTime >= timeLimit && didAttack == false)
+        if (isActive == true) timeSlider.value = (timeLimitUpToAttack - (Time.time - startTime)) / timeLimitUpToAttack;
+        else timeSlider.value = 1.0f;
+
+        if (Time.time - startTime >= timeLimitUpToAttack && didAttack == false && isActive == true)
         {
             Debug.Log("攻撃");
             didAttack = true;
@@ -43,16 +131,17 @@ public class Enemy : MonoBehaviour
         Id = _id;
         hp = _hp;
         maxHp = _hp;
-        word = _word;
-        charStatus = new int[word.Length];
+        displayWord = _word;
+        charStatus = new int[displayWord.Length];
         GameObject canvas = transform.Find("Canvas").gameObject;
         GameObject wordObj = canvas.transform.Find("WordText").gameObject;
         wordText = wordObj.gameObject.GetComponent<Text>();
         timeSlider = canvas.transform.Find("Time").gameObject.GetComponent<Slider>();
         hpSlider = canvas.transform.Find("HP").gameObject.GetComponent<Slider>();
-        wordText.text = word;
-        timeLimit = _timeLimit;
+        wordText.text = displayWord;
+        timeLimitUpToAttack = _timeLimit;
         wordIndex = 0;
+        isActive = false;
         didAttack = false;        
         //文字数が8文字以上の場合、パネルを拡張
         if(wordText.text.Length > 8)
@@ -63,25 +152,20 @@ public class Enemy : MonoBehaviour
             panel.GetComponent<RectTransform>().sizeDelta = new Vector2(panel.GetComponent<RectTransform>().rect.width + addWidth, panel.GetComponent<RectTransform>().rect.height);
             GameObject frame = canvas.transform.Find("Frame").gameObject;
             frame.GetComponent<RectTransform>().sizeDelta = new Vector2(frame.GetComponent<RectTransform>().rect.width + addWidth, frame.GetComponent<RectTransform>().rect.height);
-        }
-        MoveToFrontOfPlayer();
-    }
-
-    private void MoveToFrontOfPlayer()
-    {
-        startTime = Time.time;
-    }
+        }        
+    }    
 
     private void Escape()
     {
         EM.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
+        candidatePositins[detectedI, detectedJ].canUse = true;
         Destroy(this.gameObject);
     }
     
 
     public bool IsInputedLetter(char inputedChar)
     {        
-        if(word[wordIndex] == inputedChar)
+        if(displayWord[wordIndex] == inputedChar)
         {
             //文字を黒くする(見えなくする)
             charStatus[wordIndex] = 1;
@@ -90,25 +174,25 @@ public class Enemy : MonoBehaviour
         {
             //文字を赤くする
             charStatus[wordIndex] = -1;
-            word = word.Remove(wordIndex, 1).Insert(wordIndex, inputedChar.ToString());
+            displayWord = displayWord.Remove(wordIndex, 1).Insert(wordIndex, inputedChar.ToString());
         }
         wordText.text = "";
-        for(int i = 0; i < word.Length; i++)
+        for(int i = 0; i < displayWord.Length; i++)
         {
             if(charStatus[i] == 1)
             {
-                wordText.text += "<color=#000000>" + word[i] + "</color>";
+                wordText.text += "<color=#000000>" + displayWord[i] + "</color>";
             }else if(charStatus[i] == -1)
             {
-                wordText.text += "<color=#FF0000>" + word[i] + "</color>";
+                wordText.text += "<color=#FF0000>" + displayWord[i] + "</color>";
             }
             else
             {
-                wordText.text += word[i];
+                wordText.text += displayWord[i];
             }
         }
         wordIndex++;
-        if(wordIndex == word.Length - 1)
+        if(wordIndex == displayWord.Length - 1)
         {
             //攻撃を受ける
             return true;
@@ -120,12 +204,13 @@ public class Enemy : MonoBehaviour
     public void ReceiveDamage(float attackPoint)
     {        
         int SuccessCount = charStatus.Count(v => v == 1);        
-        float attackScore = attackPoint * ((float)SuccessCount / word.Length);
+        float attackScore = attackPoint * ((float)SuccessCount / displayWord.Length);
         //Debug.Log(attackScore);
         hp -= attackScore;
         if (hp <= 0)
         {
             EM.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
+            candidatePositins[detectedI, detectedJ].canUse = true;
             Destroy(this.gameObject);
         }
         else
@@ -136,9 +221,9 @@ public class Enemy : MonoBehaviour
 
     void UpdateWord()
     {
-        word = EM.GetComponent<EnemyGenerator>().GetWord();
-        wordText.text = word;
-        charStatus = new int[word.Length];
+        displayWord = EM.GetComponent<EnemyGenerator>().GetWord();
+        wordText.text = displayWord;
+        charStatus = new int[displayWord.Length];
         wordIndex = 0;
     }
     
