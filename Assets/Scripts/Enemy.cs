@@ -204,8 +204,12 @@ public class Enemy : MonoBehaviour
         float hue = colorNumber * 0.1f;
         float saturation = 1.0f;
         float value = 1.0f;
-        Color32 color = Color.HSVToRGB(hue, saturation, value);
-        GetComponent<Renderer>().material.color = color;
+        Color color = Color.HSVToRGB(hue, saturation, value);
+        Material mat = GetComponent<Renderer>().material;
+        mat.EnableKeyword("_EMISSION");
+        float intensity = 2f;
+        float factor = Mathf.Pow(2, intensity);
+        GetComponent<Renderer>().material.SetColor("_EmissionColor" ,new Color(color.r*factor, color.g*factor, color.b*factor));
     }
 
 
