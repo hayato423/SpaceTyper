@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour
     {        
         EM = GameObject.Find("EnemyManager");
 
-        //生成された座標の象限の中から，最も遠い空いているところを配置する位置に決定する
+        //生成された座標の象限の中から，最も遠い，かつ空いているところを配置する位置に決定する
         Vector3 generatedPosition = this.gameObject.transform.position;
         int beginY = 0, endY = 0, beginX = 0, endX = 0;        
         if(generatedPosition.x < 0 && generatedPosition.y > 0)

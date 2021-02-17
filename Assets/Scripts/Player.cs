@@ -5,9 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private int attackPoint;
-    private bool isInputValid;
-    private int targetListIndex;
-    private uint targetEnemyId;
+    private bool isInputValid;    
     [SerializeField] GameObject targetObj;
     private GameObject targetedEnemy;
     private GameObject[] enemys;    
@@ -44,9 +42,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        isInputValid = true;
-        targetListIndex = -1;
-        targetEnemyId = 0;
+        isInputValid = true;               
         attackPoint = 1;
     }
 
@@ -55,7 +51,7 @@ public class Player : MonoBehaviour
     {
         enemys = GameObject.FindGameObjectsWithTag("Enemy");
         enemyIdList = GameObject.Find("EnemyManager").GetComponent<EnemyGenerator>().enemyIds;
-        if (enemyIdList.Contains(targetEnemyId) == false)
+        if (enemyIdList.Contains(targetObj.GetComponent<Target>().targetedEnemyId) == false)
         {
             targetedEnemy = targetObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
         }
@@ -88,33 +84,5 @@ public class Player : MonoBehaviour
     void Attack(GameObject e)
     {        
         e.GetComponent<Enemy>().ReceiveDamage(attackPoint);
-    }
-
-    /*
-    GameObject ChangeRockonTarget()
-    {        
-        if (enemyIdList.Count > 0)
-        {
-            if (targetListIndex+1 > enemyIdList.Count - 1)
-            {
-                targetListIndex = 0;
-            }
-            else
-            {
-                targetListIndex++;
-            }
-            targetEnemyId = enemyIdList[targetListIndex];
-            foreach (GameObject enemy in enemys)
-            {
-                if (targetEnemyId == enemy.GetComponent<Enemy>().Id)
-                {
-                    targetObj.transform.position = enemy.transform.position + new Vector3(0f,0f,-0.78f);
-                    return enemy;
-                }
-            }
-        }
-        return null;
-    }
-
-    */
+    }    
 }

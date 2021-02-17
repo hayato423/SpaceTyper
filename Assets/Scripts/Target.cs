@@ -5,7 +5,7 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     private GameObject targetedEnemy;
-    private uint targetedEnemyId;
+    public uint targetedEnemyId { get; private set; }
     private int enemyIdsIndex;
     // Start is called before the first frame update
     void Start()
