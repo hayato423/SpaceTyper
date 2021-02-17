@@ -384,7 +384,7 @@ MonoBehaviour:
   enemy_prefab: {fileID: 1756632182078730673, guid: 5d9a2ffd060e10b4db5e703f6d5e3965,
     type: 3}
   interval: 5
-  enemyTimeLimit: 900
+  enemyTimeLimit: 10
   enemyIds: 
 --- !u!1 &963194225
 GameObject:

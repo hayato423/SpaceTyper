@@ -30,8 +30,7 @@ public class EnemyGenerator : MonoBehaviour
         if(Time.time - startTime > interval)
         {
             GenerateEnemy();
-            enemyIds.Add(idNum);
-            idNum++;
+            //enemyIds.Add(idNum);            
             startTime = Time.time;
         }
         /*
@@ -57,6 +56,8 @@ public class EnemyGenerator : MonoBehaviour
         string word = GetWord();
         GameObject enemy = Instantiate(enemy_prefab, new Vector3(x, y, z), Quaternion.identity) as GameObject;
         enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,word,enemyTimeLimit);
+        
+        idNum++;
     }
 
     //テキストファイル読み込み
