@@ -7,7 +7,7 @@ public class Target : MonoBehaviour
 {    
     private GameObject targetedEnemy;
     private RectTransform myRectTransform;
-    private Camera camera;
+    private Camera cam;
     public uint targetedEnemyId { get; private set; }
     private int enemyIdsIndex;
     // Start is called before the first frame update
@@ -16,7 +16,7 @@ public class Target : MonoBehaviour
         enemyIdsIndex = 0;
         targetedEnemyId = 0;
         myRectTransform = GetComponent<RectTransform>();
-        camera = Camera.main;
+        cam = Camera.main;
     }
 
     // Update is called once per frame
@@ -25,7 +25,7 @@ public class Target : MonoBehaviour
         if (targetedEnemy != null && targetedEnemy.GetComponent<Renderer>().isVisible)
         {
             GetComponent<Image>().enabled = true;                     
-            Vector2 screenPos = camera.WorldToScreenPoint(targetedEnemy.transform.position);
+            Vector2 screenPos = cam.WorldToScreenPoint(targetedEnemy.transform.position);
             myRectTransform.position = screenPos;
         }
         else

@@ -9,8 +9,13 @@ public class EnemyGenerator : MonoBehaviour
     private string[] words;
     [SerializeField] float interval;
     [SerializeField] float enemyTimeLimit;
+    [SerializeField] float enemyHp;
     private float startTime;
-    private int enemyHp;
+    private int _destroyedEnemyNum;
+    public int destroyedEnemyNum { 
+        get { return _destroyedEnemyNum; }
+        set { _destroyedEnemyNum++; }
+        }
     private int phase;
     public List<uint> enemyIds;    
     // Start is called before the first frame update
@@ -33,15 +38,12 @@ public class EnemyGenerator : MonoBehaviour
             //enemyIds.Add(idNum);            
             startTime = Time.time;
         }
-        /*
-        //敵を10体生成する度にフェーズを1上げる
-        if(idNum > phase * 10)
+        if(destroyedEnemyNum > phase * 10)
         {
             phase++;
-            if(interval > 0.3f) interval = interval * (1.0f - ((phase-1) * 0.1f));
-            enemyHp += phase;
-        }
-        */
+            enemyHp += phase * 0.1f;
+            if(interval > 1.0f) interval -= 0.2f;
+        }                
     }
 
     //敵を生成する

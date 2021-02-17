@@ -181,6 +181,7 @@ public class Enemy : MonoBehaviour
         {
             //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
             //candidatePositins[detectedI, detectedJ].canUse = true;
+            EnemyManager.GetComponent<EnemyGenerator>().destroyedEnemyNum++;
             Destroy(this.gameObject);
         }
         else
