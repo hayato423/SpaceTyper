@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private uint targetEnemyId;
     [SerializeField] GameObject targetObj;
     private GameObject targetedEnemy;
-    private GameObject[] enemys;
+    private GameObject[] enemys;    
     List<uint> enemyIdList;    
     Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
         enemyIdList = GameObject.Find("EnemyManager").GetComponent<EnemyGenerator>().enemyIds;
         if (enemyIdList.Contains(targetEnemyId) == false)
         {
-            targetedEnemy = ChangeRockonTarget();
+            targetedEnemy = targetObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
         }
     }
 
@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
         {            
             if (e.keyCode == KeyCode.Tab)
             {
-                targetedEnemy = ChangeRockonTarget();            
+                targetedEnemy = targetObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
             }
             else
             {                
@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
         e.GetComponent<Enemy>().ReceiveDamage(attackPoint);
     }
 
-
+    /*
     GameObject ChangeRockonTarget()
     {        
         if (enemyIdList.Count > 0)
@@ -115,4 +115,6 @@ public class Player : MonoBehaviour
         }
         return null;
     }
+
+    */
 }
