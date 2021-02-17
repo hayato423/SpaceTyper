@@ -17,14 +17,14 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(targetedEnemy == null)
-        {
-            this.transform.position = new Vector3(0f, 0f, 6.31f);
-        }
-        else
+        if (targetedEnemy != null && targetedEnemy.GetComponent<Renderer>().isVisible)
         {
             this.transform.position = targetedEnemy.transform.position + new Vector3(0f, 0f, -0.78f);
         }
+        else
+        {
+            this.transform.position = new Vector3(0f, 0f, 6.31f);
+        }        
     }
 
     public GameObject ChangeRockOnEnemy(in  List<uint> enemyIds, in GameObject[] enemys)
