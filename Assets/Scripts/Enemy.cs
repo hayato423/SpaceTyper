@@ -54,6 +54,9 @@ public class Enemy : MonoBehaviour
     {        
         EM = GameObject.Find("EnemyManager");
 
+
+        SetColor();
+
         //生成された座標の象限の中から，最も遠い，かつ空いているところを配置する位置に決定する
         Vector3 generatedPosition = this.gameObject.transform.position;
         int beginY = 0, endY = 0, beginX = 0, endX = 0;        
@@ -107,7 +110,7 @@ public class Enemy : MonoBehaviour
         if((transform.position - willMovePosition).sqrMagnitude > toleranceDistanceSquare)
         {
             transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
-        }
+        } 
         else if(isActive == false)
         {
             startTime = Time.time;
@@ -225,6 +228,17 @@ public class Enemy : MonoBehaviour
         wordText.text = displayWord;
         charStatus = new int[displayWord.Length];
         wordIndex = 0;
+    }
+
+
+    void SetColor()
+    {
+        int colorNumber = Random.Range(0, 10);
+        float hue = colorNumber * 0.1f;
+        float saturation = 1.0f;
+        float value = 1.0f;
+        Color32 color = Color.HSVToRGB(hue, saturation, value);
+        GetComponent<Renderer>().material.color = color;
     }
     
 }
