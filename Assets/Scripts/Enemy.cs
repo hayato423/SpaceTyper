@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     private Slider hpSlider;
     private Slider timeSlider;
     private GameObject EnemyManager;
-    private GameObject cameraObj;    
+    private GameObject playerObj;    
     public struct CandidatePosition
     {
         public bool canUse;
@@ -57,7 +57,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {        
         EnemyManager = GameObject.Find("EnemyManager");
-        cameraObj = GameObject.Find("Main Camera");
+        playerObj = GameObject.Find("Player");
         DetectPosition();
         SetColor();        
     }
@@ -275,7 +275,7 @@ public class Enemy : MonoBehaviour
     {
         GameObject beamInstance = Instantiate(beam, this.transform.position, Quaternion.identity);
         //beamInstance.GetComponent<Beam>().InitForEnemy();        
-        beamInstance.GetComponent<Beam>().Initialize(false, "MainCamera", cameraObj);
+        beamInstance.GetComponent<Beam>().Initialize(false, "Player", playerObj);
     }
     
 }

@@ -75,17 +75,17 @@ public class Player : MonoBehaviour
                     bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
                     if (IsAttackValid == true)
                     {
-                        Attack(targetedEnemy);
+                        Attack();
                     }
                 }
             }
         }
     }
 
-    void Attack(GameObject enemy)
+    void Attack()
     {
         GameObject beamInstance = Instantiate(beam, transform.position, Quaternion.identity);
-        beamInstance.GetComponent<Beam>().Initialize(true, "Enemy", enemy, attackPoint);
+        beamInstance.GetComponent<Beam>().Initialize(true, "Enemy", targetedEnemy, attackPoint);
         //enemy.GetComponent<Enemy>().ReceiveDamage(attackPoint);
     }    
 }
