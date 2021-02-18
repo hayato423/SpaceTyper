@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
     private Slider hpSlider;
     private Slider timeSlider;
     private GameObject EnemyManager;
+    private GameObject cameraObj;
     public struct CandidatePosition
     {
         public bool canUse;
@@ -37,8 +38,11 @@ public class Enemy : MonoBehaviour
     }
     static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];
 
+    [SerializeField] GameObject beam;
+
     static Enemy()
     {
+        //配置される位置の候補を作成
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 5; j++)
@@ -53,7 +57,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {        
         EnemyManager = GameObject.Find("EnemyManager");
-
+        cameraObj = GameObject.Find("Main Camera");
         DetectPosition();
         SetColor();        
     }
@@ -83,7 +87,8 @@ public class Enemy : MonoBehaviour
 
         if (Time.time - startTime >= timeLimitUpToAttack && didAttack == false && isActive == true)
         {
-            Debug.Log("攻撃");
+
+            Attack();
             didAttack = true;
             Escape();
         }
@@ -263,6 +268,14 @@ public class Enemy : MonoBehaviour
     void AddMyIdToList()
     {
         EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Add(Id);
+    }
+
+
+    void Attack()
+    {
+        GameObject beamInstance = Instantiate(beam, this.transform.position, Quaternion.identity);
+        //beamInstance.GetComponent<Beam>().InitForEnemy();        
+        beamInstance.GetComponent<Beam>().Initialize(false, "MainCamera", cameraObj);
     }
     
 }
