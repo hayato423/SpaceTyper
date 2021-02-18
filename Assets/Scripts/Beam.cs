@@ -8,18 +8,17 @@ public class Beam : MonoBehaviour
     private bool isFinishedInit;
     [SerializeField] float speed;
     private GameObject targetObj;
-    private Vector3 destination;
-    private Vector3 direction;
-    private Material mat;
-    private Color enemyColor;
-    private Color playerColor;    
+    private Vector3 destination;    
+    private MeshRenderer meshRend;
+    [ColorUsage(false,true)]  public Color enemyColor;
+    [ColorUsage(false, true)] public Color playerColor;    
     private string targetTagName;
-    private int attackPointOfPlayer = 0;
-    private float generatedTime;
+    private int attackPointOfPlayer = 0;    
     // Start is called before the first frame update
     void Awake()
     {
         isFinishedInit = false;
+        meshRend = GetComponent<MeshRenderer>();
     }
 
     // Update is called once per frame
@@ -46,13 +45,19 @@ public class Beam : MonoBehaviour
     {
         isPlayer            = isP;
         targetObj           = target;
-        destination         = targetObj.transform.position;
-        direction           = (destination - transform.position).normalized;
+        destination         = targetObj.transform.position;        
         targetTagName       = tag;
         attackPointOfPlayer = attackPoint;
         Rotate();                
-        isFinishedInit = true;
-        generatedTime = Time.time;
+        isFinishedInit = true;        
+        if(isPlayer == true)
+        {
+            meshRend.material.SetColor("_EmissionColor", playerColor);
+        }
+        else
+        {
+            meshRend.material.SetColor("_EmissionColor", enemyColor);
+        }
     }
 
     private void Rotate()

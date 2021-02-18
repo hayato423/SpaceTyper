@@ -111,6 +111,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 40
+  enemyColor: {r: 4.9842935, g: 1.0750437, b: 1.0750437, a: 0}
+  playerColor: {r: 0.972549, g: 8, b: 1.1294118, a: 0}
 --- !u!65 &8255723169070092532
 BoxCollider:
   m_ObjectHideFlags: 0
