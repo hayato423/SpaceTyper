@@ -69,5 +69,8 @@ crashlytics-build.properties
 InitTestScene*.unity.meta
 InitTestScene*.unity
 
+# Import Asset from Asset Store
+Assets/MilkyWay/*
+
 
 # End of https://www.toptal.com/developers/gitignore/api/unity

@@ -1,17 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Target : MonoBehaviour
-{
+{    
     private GameObject targetedEnemy;
+    private RectTransform myRectTransform;
+    private Camera cam;
     public uint targetedEnemyId { get; private set; }
     private int enemyIdsIndex;
     // Start is called before the first frame update
     void Start()
     {
         enemyIdsIndex = 0;
-        targetedEnemyId = 0;        
+        targetedEnemyId = 0;
+        myRectTransform = GetComponent<RectTransform>();
+        cam = Camera.main;
     }
 
     // Update is called once per frame
@@ -19,12 +24,14 @@ public class Target : MonoBehaviour
     {
         if (targetedEnemy != null && targetedEnemy.GetComponent<Renderer>().isVisible)
         {
-            this.transform.position = targetedEnemy.transform.position + new Vector3(0f, 0f, -0.78f);
+            GetComponent<Image>().enabled = true;                     
+            Vector2 screenPos = cam.WorldToScreenPoint(targetedEnemy.transform.position);
+            myRectTransform.position = screenPos;
         }
         else
         {
-            this.transform.position = new Vector3(0f, 0f, 6.31f);
-        }        
+            GetComponent<Image>().enabled = false;
+        }
     }
 
     public GameObject ChangeRockOnEnemy(in  List<uint> enemyIds, in GameObject[] enemys)

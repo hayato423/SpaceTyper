@@ -18,12 +18,13 @@ public class Enemy : MonoBehaviour
     private int detectedI = 0;
     private int detectedJ = 0;
     public bool isActive { get; private set; }
-    private Vector3 willMovePosition;
+    private Vector3 destinationPosition;
     private Vector3 movingDirectionVector;
     private Text wordText;
     private Slider hpSlider;
     private Slider timeSlider;
-    private GameObject EM;
+    private GameObject EnemyManager;
+    private GameObject playerObj;    
     public struct CandidatePosition
     {
         public bool canUse;
@@ -37,8 +38,11 @@ public class Enemy : MonoBehaviour
     }
     static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];
 
+    [SerializeField] GameObject beam;
+
     static Enemy()
     {
+        //配置される位置の候補を作成
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 5; j++)
@@ -52,8 +56,8 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {        
-        EM = GameObject.Find("EnemyManager");
-
+        EnemyManager = GameObject.Find("EnemyManager");
+        playerObj = GameObject.Find("Player");
         DetectPosition();
         SetColor();        
     }
@@ -62,15 +66,17 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         //指定された座標まで移動する
-        const float moveSpeedms = 5.0f;
+        const float moveSpeedms = 12.0f;
         const float toleranceDistanceSquare = 0.01f;
-        if((transform.position - willMovePosition).sqrMagnitude > toleranceDistanceSquare)
+        float SquareOfCurrentPosToDestinationPos = (transform.position - destinationPosition).sqrMagnitude;
+        if (SquareOfCurrentPosToDestinationPos > toleranceDistanceSquare)
         {
             transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
         } 
         else if(isActive == false)
         {
             startTime = Time.time;
+            AddMyIdToList();
             isActive = true;
         }
 
@@ -81,7 +87,8 @@ public class Enemy : MonoBehaviour
 
         if (Time.time - startTime >= timeLimitUpToAttack && didAttack == false && isActive == true)
         {
-            Debug.Log("攻撃");
+
+            Attack();
             didAttack = true;
             Escape();
         }
@@ -113,18 +120,32 @@ public class Enemy : MonoBehaviour
             GameObject frame = canvas.transform.Find("Frame").gameObject;
             frame.GetComponent<RectTransform>().sizeDelta = new Vector2(frame.GetComponent<RectTransform>().rect.width + addWidth, frame.GetComponent<RectTransform>().rect.height);
         }        
-    }    
+    }
+
+
+    private void OnDestroy()
+    {
+        EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
+        candidatePositins[detectedI, detectedJ].canUse = true;
+    }
 
     private void Escape()
     {
-        EM.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
-        candidatePositins[detectedI, detectedJ].canUse = true;
+        //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
+        //candidatePositins[detectedI, detectedJ].canUse = true;
         Destroy(this.gameObject);
     }
+
     
 
     public bool IsInputedLetter(char inputedChar)
     {        
+        if(wordIndex >= displayWord.Length - 1)
+        {
+            return false;
+        }
+
+
         if(displayWord[wordIndex] == inputedChar)
         {
             //文字を黒くする(見えなくする)
@@ -169,8 +190,9 @@ public class Enemy : MonoBehaviour
         hp -= attackScore;
         if (hp <= 0)
         {
-            EM.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
-            candidatePositins[detectedI, detectedJ].canUse = true;
+            //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
+            //candidatePositins[detectedI, detectedJ].canUse = true;
+            EnemyManager.GetComponent<EnemyGenerator>().destroyedEnemyNum++;
             Destroy(this.gameObject);
         }
         else
@@ -181,7 +203,7 @@ public class Enemy : MonoBehaviour
 
     void UpdateWord()
     {
-        displayWord = EM.GetComponent<EnemyGenerator>().GetWord();
+        displayWord = EnemyManager.GetComponent<EnemyGenerator>().GetWord();
         wordText.text = displayWord;
         charStatus = new int[displayWord.Length];
         wordIndex = 0;
@@ -194,8 +216,12 @@ public class Enemy : MonoBehaviour
         float hue = colorNumber * 0.1f;
         float saturation = 1.0f;
         float value = 1.0f;
-        Color32 color = Color.HSVToRGB(hue, saturation, value);
-        GetComponent<Renderer>().material.color = color;
+        Color color = Color.HSVToRGB(hue, saturation, value);
+        Material mat = GetComponent<Renderer>().material;
+        mat.EnableKeyword("_EMISSION");
+        float intensity = 4f;
+        float factor = Mathf.Pow(2, intensity);
+        GetComponent<Renderer>().material.SetColor("_EmissionColor" ,new Color(color.r*factor, color.g*factor, color.b*factor));
     }
 
 
@@ -240,9 +266,22 @@ public class Enemy : MonoBehaviour
             }
         }
         if (maxDistance == -1) Destroy(this.gameObject);
-        willMovePosition = candidatePositins[detectedI, detectedJ].position;
+        destinationPosition = candidatePositins[detectedI, detectedJ].position;
         candidatePositins[detectedI, detectedJ].canUse = false;
-        movingDirectionVector = (willMovePosition - transform.position).normalized;
+        movingDirectionVector = (destinationPosition - transform.position).normalized;
+    }
+
+    void AddMyIdToList()
+    {
+        EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Add(Id);
+    }
+
+
+    void Attack()
+    {
+        GameObject beamInstance = Instantiate(beam, this.transform.position, Quaternion.identity);
+        //beamInstance.GetComponent<Beam>().InitForEnemy();        
+        beamInstance.GetComponent<Beam>().Initialize(false, "Player", playerObj);
     }
     
 }
