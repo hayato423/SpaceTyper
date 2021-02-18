@@ -140,6 +140,12 @@ public class Enemy : MonoBehaviour
 
     public bool IsInputedLetter(char inputedChar)
     {        
+        if(wordIndex >= displayWord.Length - 1)
+        {
+            return false;
+        }
+
+
         if(displayWord[wordIndex] == inputedChar)
         {
             //文字を黒くする(見えなくする)

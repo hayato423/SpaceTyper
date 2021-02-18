@@ -34,6 +34,7 @@ public class Beam : MonoBehaviour
             }
             catch (MissingReferenceException exception)
             {
+                Debug.LogWarning(exception);
                 Destroy(this.gameObject);
             }
         }        
