@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 431847194}
   - component: {fileID: 431847193}
   m_Layer: 5
-  m_Name: Sight
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 2.95
   m_ReferenceResolution: {x: 800, y: 600}
@@ -358,7 +358,7 @@ MonoBehaviour:
   enemy_prefab: {fileID: 1756632182078730673, guid: 5d9a2ffd060e10b4db5e703f6d5e3965,
     type: 3}
   interval: 4.8
-  enemyTimeLimit: 10
+  enemyTimeLimit: 5
   enemyHp: 1
   enemyIds: 
 --- !u!1 &963194225
@@ -705,7 +705,7 @@ GameObject:
   - component: {fileID: 1959674345}
   - component: {fileID: 1959674347}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Sight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
