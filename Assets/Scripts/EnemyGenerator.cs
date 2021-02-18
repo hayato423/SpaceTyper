@@ -16,7 +16,7 @@ public class EnemyGenerator : MonoBehaviour
         get { return _destroyedEnemyNum; }
         set { _destroyedEnemyNum++; }
         }
-    private int phase;
+    public int phase;
     public List<uint> enemyIds;    
     // Start is called before the first frame update
     void Start()

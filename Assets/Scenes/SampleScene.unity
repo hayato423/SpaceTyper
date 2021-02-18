@@ -232,6 +232,7 @@ GameObject:
   - component: {fileID: 704942295}
   - component: {fileID: 704942297}
   - component: {fileID: 704942296}
+  - component: {fileID: 704942298}
   m_Layer: 5
   m_Name: ScoreText
   m_TagString: Untagged
@@ -299,6 +300,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704942294}
   m_CullTransparentMesh: 0
+--- !u!114 &704942298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704942294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf52c6d130223f4684a68b2ecf00a45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,6 +452,7 @@ MonoBehaviour:
   interval: 4.8
   enemyTimeLimit: 5
   enemyHp: 1
+  phase: 0
   enemyIds: 
 --- !u!1 &963194225
 GameObject:
@@ -609,7 +623,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1047613146}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

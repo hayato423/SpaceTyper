@@ -24,7 +24,8 @@ public class Enemy : MonoBehaviour
     private Slider hpSlider;
     private Slider timeSlider;
     private GameObject EnemyManager;
-    private GameObject playerObj;    
+    private GameObject playerObj;
+    private GameObject scoreTextObj;
     public struct CandidatePosition
     {
         public bool canUse;
@@ -55,7 +56,8 @@ public class Enemy : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
+        scoreTextObj = GameObject.Find("ScoreText");
         EnemyManager = GameObject.Find("EnemyManager");
         playerObj = GameObject.Find("Player");
         DetectPosition();
@@ -190,8 +192,7 @@ public class Enemy : MonoBehaviour
         hp -= attackScore;
         if (hp <= 0)
         {
-            //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
-            //candidatePositins[detectedI, detectedJ].canUse = true;
+            scoreTextObj.GetComponent<Score>().AddScore(100 + (EnemyManager.GetComponent<EnemyGenerator>().phase-1) * 50);
             EnemyManager.GetComponent<EnemyGenerator>().destroyedEnemyNum++;
             Destroy(this.gameObject);
         }
