@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     private Slider hpSlider;
     private Slider timeSlider;
     private GameObject EnemyManager;
-    private GameObject cameraObj;
+    private GameObject cameraObj;    
     public struct CandidatePosition
     {
         public bool canUse;

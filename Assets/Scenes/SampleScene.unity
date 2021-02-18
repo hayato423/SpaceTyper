@@ -358,7 +358,7 @@ MonoBehaviour:
   enemy_prefab: {fileID: 1756632182078730673, guid: 5d9a2ffd060e10b4db5e703f6d5e3965,
     type: 3}
   interval: 4.8
-  enemyTimeLimit: 5
+  enemyTimeLimit: 10
   enemyHp: 1
   enemyIds: 
 --- !u!1 &963194225
@@ -563,6 +563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObj: {fileID: 1959674343}
+  beam: {fileID: 144853965928003070, guid: 5174983bb382b274f9e56c706891ba1b, type: 3}
 --- !u!1 &1201292404
 GameObject:
   m_ObjectHideFlags: 0

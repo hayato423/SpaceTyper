@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
         {KeyCode.Y, 'y' },
         {KeyCode.Z, 'z' }
     };
+    [SerializeField] GameObject beam;
     // Start is called before the first frame update
     void Start()
     {
@@ -81,8 +82,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Attack(GameObject e)
-    {        
-        e.GetComponent<Enemy>().ReceiveDamage(attackPoint);
+    void Attack(GameObject enemy)
+    {
+        GameObject beamInstance = Instantiate(beam, transform.position, Quaternion.identity);
+        beamInstance.GetComponent<Beam>().Initialize(true, "Enemy", enemy, attackPoint);
+        //enemy.GetComponent<Enemy>().ReceiveDamage(attackPoint);
     }    
 }

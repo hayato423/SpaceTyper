@@ -12,6 +12,7 @@ public class Beam : MonoBehaviour
     private Color enemyColor;
     private Color playerColor;    
     private string targetTagName;
+    private int attackPointOfPlayer = 0;
     // Start is called before the first frame update
     void Awake()
     {
@@ -30,12 +31,13 @@ public class Beam : MonoBehaviour
 
     
 
-    public void Initialize(bool isP, string tag, in GameObject target)
+    public void Initialize(bool isP, string tag, in GameObject target, int attackPoint = 0)
     {
-        isPlayer       = isP;
-        targetObj      = target;
-        targetTagName  = tag;
-        Rotate();
+        isPlayer            = isP;
+        targetObj           = target;
+        targetTagName       = tag;
+        attackPointOfPlayer = attackPoint;
+        Rotate();                
         isFinishedInit = true;
     }
 
@@ -52,7 +54,11 @@ public class Beam : MonoBehaviour
         if(other.tag == targetTagName)
         {            
             Destroy(this.gameObject);
+            if(targetTagName == "Enemy")
+            {
+                other.gameObject.GetComponent<Enemy>().ReceiveDamage(attackPointOfPlayer);
+            }
             return;
-        }
+        }        
     }
 }
