@@ -97,18 +97,18 @@ public class Player : MonoBehaviour
 
     private void LineUpLifeImg()
     {
-        for(int i = 0; i < life; ++i)
+        for(int i = 1; i <= life; ++i)
         {
             Image instance =  Instantiate(original: lifeImg, parent: canvas.transform);
             Vector2 lifeImgPos = lifeImg.rectTransform.anchoredPosition;
-            instance.GetComponent<RectTransform>().anchoredPosition = new Vector3(lifeImgPos.x + (40 * i), lifeImgPos.y,0);            
-            Debug.Log(instance.rectTransform.position);
+            instance.GetComponent<RectTransform>().anchoredPosition = new Vector3(lifeImgPos.x + (40 * (i-1)), lifeImgPos.y,0);                        
             instance.name = "Life" + i;
         }
     }
 
     public void ReceiveDamage()
     {
+        Destroy(GameObject.Find("Life" + life));
         life--;
         if( life < 0)
         {
