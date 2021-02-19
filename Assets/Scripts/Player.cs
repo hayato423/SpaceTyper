@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     private int attackPoint;
     private bool isInputValid;    
-    [SerializeField] GameObject targetObj;
+    [SerializeField] GameObject sightObj;
     private GameObject targetedEnemy;
     private GameObject[] enemys;    
     List<uint> enemyIdList;    
@@ -40,11 +41,15 @@ public class Player : MonoBehaviour
         {KeyCode.Z, 'z' }
     };
     [SerializeField] GameObject beam;
+    [SerializeField] int life;
+    [SerializeField] Canvas canvas;
+    [SerializeField] Image lifeImg;
     // Start is called before the first frame update
     void Start()
     {
         isInputValid = true;               
         attackPoint = 1;
+        LineUpLifeImg();
     }
 
     // Update is called once per frame
@@ -52,9 +57,9 @@ public class Player : MonoBehaviour
     {
         enemys = GameObject.FindGameObjectsWithTag("Enemy");
         enemyIdList = GameObject.Find("EnemyManager").GetComponent<EnemyGenerator>().enemyIds;
-        if (enemyIdList.Contains(targetObj.GetComponent<Target>().targetedEnemyId) == false)
+        if (enemyIdList.Contains(sightObj.GetComponent<Target>().targetedEnemyId) == false)
         {
-            targetedEnemy = targetObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
+            targetedEnemy = sightObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
         }
     }
 
@@ -66,7 +71,7 @@ public class Player : MonoBehaviour
         {            
             if (e.keyCode == KeyCode.Tab)
             {
-                targetedEnemy = targetObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
+                targetedEnemy = sightObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
             }
             else
             {                
@@ -88,4 +93,26 @@ public class Player : MonoBehaviour
         beamInstance.GetComponent<Beam>().Initialize(true, "Enemy", targetedEnemy, attackPoint);
         //enemy.GetComponent<Enemy>().ReceiveDamage(attackPoint);
     }    
+
+
+    private void LineUpLifeImg()
+    {
+        for(int i = 0; i < life; ++i)
+        {
+            Image instance =  Instantiate(original: lifeImg, parent: canvas.transform);
+            Vector2 lifeImgPos = lifeImg.rectTransform.anchoredPosition;
+            instance.GetComponent<RectTransform>().anchoredPosition = new Vector3(lifeImgPos.x + (40 * i), lifeImgPos.y,0);            
+            Debug.Log(instance.rectTransform.position);
+            instance.name = "Life" + i;
+        }
+    }
+
+    public void ReceiveDamage()
+    {
+        life--;
+        if( life < 0)
+        {
+            Debug.Log("gameover");
+        }
+    }
 }

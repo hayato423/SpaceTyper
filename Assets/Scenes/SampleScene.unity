@@ -642,8 +642,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a41b4aa3848e2ce46b922f295df7660d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetObj: {fileID: 1959674343}
+  sightObj: {fileID: 1959674343}
   beam: {fileID: 144853965928003070, guid: 5174983bb382b274f9e56c706891ba1b, type: 3}
+  life: 3
+  canvas: {fileID: 431847195}
+  lifeImg: {fileID: 6278263892399780982, guid: 9f6c92e84a5f8af40a3f228e62d4f678, type: 3}
 --- !u!65 &1047613149
 BoxCollider:
   m_ObjectHideFlags: 0

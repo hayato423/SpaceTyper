@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Beam : MonoBehaviour
 {
-    private bool isPlayer;
+    private bool isPlayers;
     private bool isFinishedInit;
     [SerializeField] float speed;
     private GameObject targetObj;
@@ -43,14 +43,14 @@ public class Beam : MonoBehaviour
 
     public void Initialize(bool isP, string tag, in GameObject target, int attackPoint = 0)
     {
-        isPlayer            = isP;
+        isPlayers            = isP;
         targetObj           = target;
         destination         = targetObj.transform.position;        
         targetTagName       = tag;
         attackPointOfPlayer = attackPoint;
         Rotate();                
         isFinishedInit = true;        
-        if(isPlayer == true)
+        if(isPlayers == true)
         {
             meshRend.material.SetColor("_EmissionColor", playerColor);
         }
@@ -73,9 +73,12 @@ public class Beam : MonoBehaviour
         if(other.tag == targetTagName)
         {            
             Destroy(this.gameObject);
-            if(isPlayer == true)
+            if(isPlayers == true)
             {
                 other.gameObject.GetComponent<Enemy>().ReceiveDamage(attackPointOfPlayer);
+            }else
+            {
+                other.gameObject.GetComponent<Player>().ReceiveDamage();
             }
             return;
         }        
