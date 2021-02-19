@@ -26,6 +26,8 @@ public class Enemy : MonoBehaviour
     private GameObject EnemyManager;
     private GameObject playerObj;
     private GameObject scoreTextObj;
+    private float animationCriteriaTime;
+    private bool isRise;
     public struct CandidatePosition
     {
         public bool canUse;
@@ -71,21 +73,45 @@ public class Enemy : MonoBehaviour
         const float moveSpeedms = 12.0f;
         const float toleranceDistanceSquare = 0.01f;
         float SquareOfCurrentPosToDestinationPos = (transform.position - destinationPosition).sqrMagnitude;
-        if (SquareOfCurrentPosToDestinationPos > toleranceDistanceSquare)
+        if(isActive == false)
         {
-            transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
-        } 
-        else if(isActive == false)
-        {
-            startTime = Time.time;
-            AddMyIdToList();
-            isActive = true;
-        }
+            if (SquareOfCurrentPosToDestinationPos > toleranceDistanceSquare)
+            {
+                transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
+            }
+            else
+            {
+                startTime = Time.time;
+                AddMyIdToList();
+                isActive = true;
+                isRise = true;
+                animationCriteriaTime = Time.time;
+            }
+        }        
 
         //HPバー，残り時間バーを更新
         hpSlider.value = hp / maxHp;
         if (isActive == true) timeSlider.value = (timeLimitUpToAttack - (Time.time - startTime)) / timeLimitUpToAttack;
         else timeSlider.value = 1.0f;
+
+        //敵の待機アニメーション
+        if (isActive)
+        {
+            transform.Rotate(0, 90 * Time.deltaTime, 0, Space.Self);            
+            if (isRise)
+            {
+                transform.Translate(0, 0.002f, 0);
+            }
+            else
+            {
+                transform.Translate(0, -0.002f, 0);
+            }
+            if (Time.time - animationCriteriaTime > 2.0f)
+            {
+                isRise = !isRise;
+                animationCriteriaTime = Time.time;
+            }
+        }
 
         if (Time.time - startTime >= timeLimitUpToAttack && didAttack == false && isActive == true)
         {
@@ -220,7 +246,7 @@ public class Enemy : MonoBehaviour
         Color color = Color.HSVToRGB(hue, saturation, value);
         Material mat = GetComponent<Renderer>().material;
         mat.EnableKeyword("_EMISSION");
-        float intensity = 4f;
+        float intensity = 3.2f;
         float factor = Mathf.Pow(2, intensity);
         GetComponent<Renderer>().material.SetColor("_EmissionColor" ,new Color(color.r*factor, color.g*factor, color.b*factor));
     }
