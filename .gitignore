@@ -71,6 +71,7 @@ InitTestScene*.unity
 
 # Import Asset from Asset Store
 Assets/MilkyWay/*
+Assets/EffectExamples/*
 
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
