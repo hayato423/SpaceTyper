@@ -75,8 +75,8 @@ public class Player : MonoBehaviour
             }
             else
             {                
-                if(targetedEnemy != null)
-                {
+                if(targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
+                {                    
                     bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
                     if (IsAttackValid == true)
                     {
