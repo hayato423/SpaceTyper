@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     private int[] charStatus;   //-1:ミス, 1:正解, 0:未決定
     private int detectedI = 0;
     private int detectedJ = 0;
-    public bool isActive { get; private set; }
+    public bool isActive { get; private set; }    
     private Vector3 destinationPosition;
     private Vector3 movingDirectionVector;
     private Text wordText;
@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {        
         scoreTextObj = GameObject.Find("ScoreText");
         EnemyManager = GameObject.Find("EnemyManager");
         playerObj = GameObject.Find("Player");
@@ -113,12 +113,21 @@ public class Enemy : MonoBehaviour
             }
         }
 
+        //一定時間経つと攻撃
         if (Time.time - startTime >= timeLimitUpToAttack && didAttack == false && isActive == true)
         {
 
             Attack();
             didAttack = true;
-            Escape();
+            // 移動方向ベクトルを反転し，来た道を戻る
+            movingDirectionVector = -1 * movingDirectionVector;
+        }
+
+        if(didAttack == true)
+        {
+            //撤退アニメーション
+            transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
+            Destroy(this.gameObject, 2f);
         }
     }
     public void Initialize(uint _id, float _hp, string _word, float _timeLimit)
@@ -156,13 +165,7 @@ public class Enemy : MonoBehaviour
         EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
         candidatePositins[detectedI, detectedJ].canUse = true;
     }
-
-    private void Escape()
-    {
-        //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
-        //candidatePositins[detectedI, detectedJ].canUse = true;
-        Destroy(this.gameObject);
-    }
+    
 
     
 
