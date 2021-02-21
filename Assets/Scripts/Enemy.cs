@@ -17,14 +17,19 @@ public class Enemy : MonoBehaviour
     private int[] charStatus;   //-1:ミス, 1:正解, 0:未決定
     private int detectedI = 0;
     private int detectedJ = 0;
-    public bool isActive { get; private set; }
+    public bool isActive { get; private set; }    
     private Vector3 destinationPosition;
     private Vector3 movingDirectionVector;
     private Text wordText;
     private Slider hpSlider;
     private Slider timeSlider;
     private GameObject EnemyManager;
-    private GameObject playerObj;    
+    private GameObject playerObj;
+    private GameObject scoreTextObj;
+    private float animationCriteriaTime;
+    private bool isRise;
+    [SerializeField] GameObject beam;
+    [SerializeField] GameObject explosionEffect;
     public struct CandidatePosition
     {
         public bool canUse;
@@ -36,9 +41,7 @@ public class Enemy : MonoBehaviour
             position = _position;
         }
     }
-    static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];
-
-    [SerializeField] GameObject beam;
+    static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];    
 
     static Enemy()
     {
@@ -50,12 +53,13 @@ public class Enemy : MonoBehaviour
                 candidatePositins[i, j] = new CandidatePosition(true, new Vector3(j * 3 - 6,i * -3 + 3, 9));
             }
         }
-    }
+    }    
     
 
     // Start is called before the first frame update
     void Start()
     {        
+        scoreTextObj = GameObject.Find("ScoreText");
         EnemyManager = GameObject.Find("EnemyManager");
         playerObj = GameObject.Find("Player");
         DetectPosition();
@@ -69,28 +73,61 @@ public class Enemy : MonoBehaviour
         const float moveSpeedms = 12.0f;
         const float toleranceDistanceSquare = 0.01f;
         float SquareOfCurrentPosToDestinationPos = (transform.position - destinationPosition).sqrMagnitude;
-        if (SquareOfCurrentPosToDestinationPos > toleranceDistanceSquare)
+        if(isActive == false)
         {
-            transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
-        } 
-        else if(isActive == false)
-        {
-            startTime = Time.time;
-            AddMyIdToList();
-            isActive = true;
-        }
+            if (SquareOfCurrentPosToDestinationPos > toleranceDistanceSquare)
+            {
+                transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
+            }
+            else
+            {
+                startTime = Time.time;
+                AddMyIdToList();
+                isActive = true;
+                isRise = true;
+                animationCriteriaTime = Time.time;
+            }
+        }        
 
         //HPバー，残り時間バーを更新
         hpSlider.value = hp / maxHp;
         if (isActive == true) timeSlider.value = (timeLimitUpToAttack - (Time.time - startTime)) / timeLimitUpToAttack;
         else timeSlider.value = 1.0f;
 
+        //敵の待機アニメーション
+        if (isActive)
+        {
+            transform.Rotate(0, 90 * Time.deltaTime, 0, Space.Self);            
+            if (isRise)
+            {
+                transform.Translate(0, 0.002f, 0);
+            }
+            else
+            {
+                transform.Translate(0, -0.002f, 0);
+            }
+            if (Time.time - animationCriteriaTime > 2.0f)
+            {
+                isRise = !isRise;
+                animationCriteriaTime = Time.time;
+            }
+        }
+
+        //一定時間経つと攻撃
         if (Time.time - startTime >= timeLimitUpToAttack && didAttack == false && isActive == true)
         {
 
             Attack();
             didAttack = true;
-            Escape();
+            // 移動方向ベクトルを反転し，来た道を戻る
+            movingDirectionVector = -1 * movingDirectionVector;
+        }
+
+        if(didAttack == true)
+        {
+            //撤退アニメーション
+            transform.Translate(movingDirectionVector * moveSpeedms * Time.deltaTime);
+            Destroy(this.gameObject, 2f);
         }
     }
     public void Initialize(uint _id, float _hp, string _word, float _timeLimit)
@@ -128,13 +165,7 @@ public class Enemy : MonoBehaviour
         EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
         candidatePositins[detectedI, detectedJ].canUse = true;
     }
-
-    private void Escape()
-    {
-        //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
-        //candidatePositins[detectedI, detectedJ].canUse = true;
-        Destroy(this.gameObject);
-    }
+    
 
     
 
@@ -190,10 +221,10 @@ public class Enemy : MonoBehaviour
         hp -= attackScore;
         if (hp <= 0)
         {
-            //EnemyManager.GetComponent<EnemyGenerator>().enemyIds.Remove(Id);
-            //candidatePositins[detectedI, detectedJ].canUse = true;
+            scoreTextObj.GetComponent<Score>().AddScore(100 + (EnemyManager.GetComponent<EnemyGenerator>().phase-1) * 50);
             EnemyManager.GetComponent<EnemyGenerator>().destroyedEnemyNum++;
             Destroy(this.gameObject);
+            Explosion();
         }
         else
         {
@@ -219,7 +250,7 @@ public class Enemy : MonoBehaviour
         Color color = Color.HSVToRGB(hue, saturation, value);
         Material mat = GetComponent<Renderer>().material;
         mat.EnableKeyword("_EMISSION");
-        float intensity = 4f;
+        float intensity = 3.2f;
         float factor = Mathf.Pow(2, intensity);
         GetComponent<Renderer>().material.SetColor("_EmissionColor" ,new Color(color.r*factor, color.g*factor, color.b*factor));
     }
@@ -283,5 +314,12 @@ public class Enemy : MonoBehaviour
         //beamInstance.GetComponent<Beam>().InitForEnemy();        
         beamInstance.GetComponent<Beam>().Initialize(false, "Player", playerObj);
     }
-    
+
+    private void Explosion()
+    {
+        GameObject explosionInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        ParticleSystem ps = explosionInstance.GetComponent<ParticleSystem>();
+        Destroy(explosionInstance, ps.main.duration);
+    }
+
 }
