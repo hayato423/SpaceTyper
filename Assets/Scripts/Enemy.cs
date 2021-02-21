@@ -28,6 +28,8 @@ public class Enemy : MonoBehaviour
     private GameObject scoreTextObj;
     private float animationCriteriaTime;
     private bool isRise;
+    [SerializeField] GameObject beam;
+    [SerializeField] GameObject explosionEffect;
     public struct CandidatePosition
     {
         public bool canUse;
@@ -39,9 +41,7 @@ public class Enemy : MonoBehaviour
             position = _position;
         }
     }
-    static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];
-
-    [SerializeField] GameObject beam;
+    static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];    
 
     static Enemy()
     {
@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
                 candidatePositins[i, j] = new CandidatePosition(true, new Vector3(j * 3 - 6,i * -3 + 3, 9));
             }
         }
-    }
+    }    
     
 
     // Start is called before the first frame update
@@ -221,6 +221,7 @@ public class Enemy : MonoBehaviour
             scoreTextObj.GetComponent<Score>().AddScore(100 + (EnemyManager.GetComponent<EnemyGenerator>().phase-1) * 50);
             EnemyManager.GetComponent<EnemyGenerator>().destroyedEnemyNum++;
             Destroy(this.gameObject);
+            Explosion();
         }
         else
         {
@@ -310,5 +311,12 @@ public class Enemy : MonoBehaviour
         //beamInstance.GetComponent<Beam>().InitForEnemy();        
         beamInstance.GetComponent<Beam>().Initialize(false, "Player", playerObj);
     }
-    
+
+    private void Explosion()
+    {
+        GameObject explosionInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        ParticleSystem ps = explosionInstance.GetComponent<ParticleSystem>();
+        Destroy(explosionInstance, ps.main.duration);
+    }
+
 }
