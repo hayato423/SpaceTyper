@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     private int[] charStatus;   //-1:ミス, 1:正解, 0:未決定
     private int detectedI = 0;
     private int detectedJ = 0;
-    public bool isActive { get; private set; }    
+    private bool isActive;
     private Vector3 destinationPosition;
     private Vector3 movingDirectionVector;
     private Text wordText;
@@ -28,8 +28,9 @@ public class Enemy : MonoBehaviour
     private GameObject scoreTextObj;
     private float animationCriteriaTime;
     private bool isRise;
+    private AudioSource beamSound;    
     [SerializeField] GameObject beam;
-    [SerializeField] GameObject explosionEffect;
+    [SerializeField] GameObject explosionEffect;    
     public struct CandidatePosition
     {
         public bool canUse;
@@ -62,6 +63,7 @@ public class Enemy : MonoBehaviour
         scoreTextObj = GameObject.Find("ScoreText");
         EnemyManager = GameObject.Find("EnemyManager");
         playerObj = GameObject.Find("Player");
+        beamSound = GetComponent<AudioSource>();
         DetectPosition();
         SetColor();        
     }
@@ -310,13 +312,14 @@ public class Enemy : MonoBehaviour
 
     void Attack()
     {
+        beamSound.PlayOneShot(beamSound.clip);
         GameObject beamInstance = Instantiate(beam, this.transform.position, Quaternion.identity);
         //beamInstance.GetComponent<Beam>().InitForEnemy();        
         beamInstance.GetComponent<Beam>().Initialize(false, "Player", playerObj);
     }
 
     private void Explosion()
-    {
+    {        
         GameObject explosionInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
         ParticleSystem ps = explosionInstance.GetComponent<ParticleSystem>();
         Destroy(explosionInstance, ps.main.duration);

@@ -9,7 +9,9 @@ public class Player : MonoBehaviour
     private bool isInputValid;    
     [SerializeField] GameObject sightObj;
     private GameObject targetedEnemy;
-    private GameObject[] enemys;    
+    private GameObject[] enemys;
+    private AudioSource beamSound;
+    private AudioSource damagedSound;
     List<uint> enemyIdList;    
     Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
@@ -43,13 +45,16 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject beam;
     [SerializeField] int life;
     [SerializeField] Canvas canvas;
-    [SerializeField] Image lifeImg;
+    [SerializeField] Image lifeImg;    
     // Start is called before the first frame update
     void Start()
     {
         isInputValid = true;               
         attackPoint = 1;
         LineUpLifeImg();
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        beamSound = audioSources[0];
+        damagedSound = audioSources[1];
     }
 
     // Update is called once per frame
@@ -89,6 +94,7 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
+        beamSound.PlayOneShot(beamSound.clip);
         GameObject beamInstance = Instantiate(beam, transform.position, Quaternion.identity);
         beamInstance.GetComponent<Beam>().Initialize(true, "Enemy", targetedEnemy, attackPoint);
         //enemy.GetComponent<Enemy>().ReceiveDamage(attackPoint);
@@ -108,6 +114,7 @@ public class Player : MonoBehaviour
 
     public void ReceiveDamage()
     {
+        damagedSound.PlayOneShot(damagedSound.clip);
         Destroy(GameObject.Find("Life" + life));
         life--;
         if( life < 0)
