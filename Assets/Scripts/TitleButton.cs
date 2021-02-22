@@ -10,6 +10,7 @@ public class TitleButton : MonoBehaviour
     {
         DeleteUnnecessaryObjs();
         SceneManager.LoadScene("MainScene");
+        Time.timeScale = 1.0f;
     }
 
     public void ExitGame()

@@ -20,13 +20,13 @@ public class EnemyGenerator : MonoBehaviour
     public List<uint> enemyIds;    
     // Start is called before the first frame update
     void Start()
-    {
+    {        
         enemyIds = new List<uint>();
         startTime = Time.time;        
         idNum = 1;
         phase = 1;
         enemyHp = 1;
-        ReadFile();
+        ReadFile();        
     }
 
     // Update is called once per frame
@@ -48,7 +48,7 @@ public class EnemyGenerator : MonoBehaviour
 
     //敵を生成する
     private void GenerateEnemy()
-    {
+    {        
         //半径9.0fの円周上に敵を生成する
         float radius = 12.0f;
         float degree = Random.Range(0, 360);
