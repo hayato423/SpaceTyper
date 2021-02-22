@@ -42,7 +42,8 @@ public class Enemy : MonoBehaviour
             position = _position;
         }
     }
-    static CandidatePosition[,] candidatePositins = new CandidatePosition[3,5];    
+    static CandidatePosition[,] candidatePositins = new CandidatePosition[3, 5];
+    static bool isFinishedInitCP;
 
     static Enemy()
     {
@@ -54,8 +55,7 @@ public class Enemy : MonoBehaviour
                 candidatePositins[i, j] = new CandidatePosition(true, new Vector3(j * 3 - 6,i * -3 + 3, 9));
             }
         }
-    }    
-    
+    }        
 
     // Start is called before the first frame update
     void Start()
@@ -97,7 +97,7 @@ public class Enemy : MonoBehaviour
         else timeSlider.value = 1.0f;
 
         //敵の待機アニメーション
-        if (isActive)
+        if (isActive && Time.timeScale > 0)
         {
             transform.Rotate(0, 90 * Time.deltaTime, 0, Space.Self);            
             if (isRise)
