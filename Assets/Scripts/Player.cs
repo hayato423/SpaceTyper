@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     [SerializeField] Canvas canvas;
     [SerializeField] Image lifeImg;
     [SerializeField] GameObject gameOverPanel;
+    [SerializeField] GameObject pausePanael;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +58,7 @@ public class Player : MonoBehaviour
         beamSound = audioSources[0];
         damagedSound = audioSources[1];
         gameOverPanel.SetActive(false);
+        pausePanael.SetActive(false);
     }
 
     // Update is called once per frame
@@ -73,21 +75,39 @@ public class Player : MonoBehaviour
     private void OnGUI()
     {
         Event e = Event.current;        
-        if(isInputValid && e.type == EventType.KeyDown && e.type != EventType.KeyUp && e.keyCode != KeyCode.None
-           && !Input.GetMouseButton(0) && !Input.GetMouseButton(1)  && !Input.GetMouseButton(2))
-        {            
-            if (e.keyCode == KeyCode.Tab)
+        if(e.type == EventType.KeyDown && e.type != EventType.KeyUp && e.keyCode != KeyCode.None)
+        {           
+            if(e.keyCode == KeyCode.Escape)
             {
-                targetedEnemy = sightObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
+                isInputValid = !isInputValid;
+                if (isInputValid == true)
+                {
+                    Time.timeScale = 1.0f;
+                    pausePanael.SetActive(false);
+                }
+                else
+                {
+                    Time.timeScale = 0.0f;
+                    pausePanael.SetActive(true);
+                }
             }
-            else
-            {                
-                if(targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
-                {                    
-                    bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
-                    if (IsAttackValid == true)
+
+
+            if (isInputValid == true)
+            {
+                if (e.keyCode == KeyCode.Tab)
+                {
+                    targetedEnemy = sightObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
+                }
+                else
+                {
+                    if (targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
                     {
-                        Attack();
+                        bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
+                        if (IsAttackValid == true)
+                        {
+                            Attack();
+                        }
                     }
                 }
             }
