@@ -28,7 +28,8 @@ public class Enemy : MonoBehaviour
     private GameObject scoreTextObj;
     private float animationCriteriaTime;
     private bool isRise;
-    private AudioSource beamSound;    
+    private AudioSource beamSound;
+    private AudioSource explosionSound;
     [SerializeField] GameObject beam;
     [SerializeField] GameObject explosionEffect;    
     public struct CandidatePosition
@@ -62,8 +63,8 @@ public class Enemy : MonoBehaviour
     {        
         scoreTextObj = GameObject.Find("ScoreText");
         EnemyManager = GameObject.Find("EnemyManager");
-        playerObj = GameObject.Find("Player");
-        beamSound = GetComponent<AudioSource>();
+        playerObj = GameObject.Find("Player");        
+        beamSound = GetComponent<AudioSource>();        
         DetectPosition();
         SetColor();        
     }
@@ -222,7 +223,7 @@ public class Enemy : MonoBehaviour
         //Debug.Log(attackScore);
         hp -= attackScore;
         if (hp <= 0)
-        {
+        {            
             scoreTextObj.GetComponent<Score>().AddScore(100 + (EnemyManager.GetComponent<EnemyGenerator>().phase-1) * 50);
             EnemyManager.GetComponent<EnemyGenerator>().destroyedEnemyNum++;
             Destroy(this.gameObject);
