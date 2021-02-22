@@ -28,6 +28,7 @@ public class TitleButton : MonoBehaviour
     {
         DeleteUnnecessaryObjs();
         SceneManager.LoadScene("TitleScene");
+        Time.timeScale = 1.0f;
     }
 
     private void DeleteUnnecessaryObjs()
