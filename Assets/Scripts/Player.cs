@@ -45,7 +45,8 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject beam;
     [SerializeField] int life;
     [SerializeField] Canvas canvas;
-    [SerializeField] Image lifeImg;    
+    [SerializeField] Image lifeImg;
+    [SerializeField] GameObject gameOverPanel;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +56,7 @@ public class Player : MonoBehaviour
         AudioSource[] audioSources = GetComponents<AudioSource>();
         beamSound = audioSources[0];
         damagedSound = audioSources[1];
+        gameOverPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -119,7 +121,11 @@ public class Player : MonoBehaviour
         life--;
         if( life < 0)
         {
-            Debug.Log("gameover");
+            int score = GameObject.Find("ScoreText").GetComponent<Score>().GetScore();            
+            Text scoreText = gameOverPanel.transform.Find("ScoreText").GetComponent<Text>();
+            scoreText.text = "SCORE:" + score;
+            gameOverPanel.SetActive(true);
+            Time.timeScale = 0.0f;
         }
     }
 }

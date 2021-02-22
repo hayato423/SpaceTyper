@@ -5,18 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class TitleButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
     public void LoadMainScene()
     {
         SceneManager.LoadScene("MainScene");
@@ -29,5 +18,11 @@ public class TitleButton : MonoBehaviour
 #else
     Application.Quit();
 #endif
+    }
+
+    
+    public void ReturnTitle()
+    {
+        SceneManager.LoadScene("TitleScene");
     }
 }
