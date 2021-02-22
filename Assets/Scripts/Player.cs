@@ -121,6 +121,7 @@ public class Player : MonoBehaviour
         life--;
         if( life < 0)
         {
+            isInputValid = false;
             int score = GameObject.Find("ScoreText").GetComponent<Score>().GetScore();            
             Text scoreText = gameOverPanel.transform.Find("ScoreText").GetComponent<Text>();
             scoreText.text = "SCORE:" + score;
