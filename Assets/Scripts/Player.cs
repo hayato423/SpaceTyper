@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private GameObject[] enemys;
     private AudioSource beamSound;
     private AudioSource damagedSound;
+    private AudioSource powerUpSound;
     List<uint> enemyIdList;    
     Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
@@ -62,6 +63,7 @@ public class Player : MonoBehaviour
         AudioSource[] audioSources = GetComponents<AudioSource>();
         beamSound = audioSources[0];
         damagedSound = audioSources[1];
+        powerUpSound = audioSources[2];
         gameOverPanel.SetActive(false);
         pausePanael.SetActive(false);
     }
@@ -79,6 +81,7 @@ public class Player : MonoBehaviour
         ComboBar.value = (float)ComboValue / (float)maxValueOfComboBar;
         if(ComboValue >= maxValueOfComboBar)
         {
+            powerUpSound.PlayOneShot(powerUpSound.clip);
             attackPoint *= 1.05f;
             ComboValue = 0;
         }
