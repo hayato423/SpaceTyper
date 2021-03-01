@@ -11,3 +11,4 @@
 - [爆発03 | 魔王魂 ](https://maoudamashii.jokersounds.com/archives/se_maoudamashii_explosion03.html)
 - [戦闘12 | 魔王魂](https://maoudamashii.jokersounds.com/archives/se_maoudamashii_battle12.html)
 - [銃05 | 魔王魂](https://maoudamashii.jokersounds.com/archives/se_maoudamashii_battle_gun05.html)
+- [システム48 | 魔王魂 ](https://maoudamashii.jokersounds.com/archives/se_maoudamashii_system48.html)
