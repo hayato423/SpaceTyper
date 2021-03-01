@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using ILR;
 
 public class Player : MonoBehaviour
 {
-    private int attackPoint;
+    private float attackPoint;
     private bool isInputValid;    
     [SerializeField] GameObject sightObj;
     private GameObject targetedEnemy;
     private GameObject[] enemys;
     private AudioSource beamSound;
     private AudioSource damagedSound;
+    private AudioSource powerUpSound;
     List<uint> enemyIdList;    
     Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
@@ -48,15 +50,20 @@ public class Player : MonoBehaviour
     [SerializeField] Image lifeImg;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] GameObject pausePanael;
+    [SerializeField] Slider ComboBar;
+    [SerializeField] int  maxValueOfComboBar = 10;
+    private int ComboValue;
     // Start is called before the first frame update
     void Start()
     {
         isInputValid = true;               
         attackPoint = 1;
+        ComboValue = 0;
         LineUpLifeImg();
         AudioSource[] audioSources = GetComponents<AudioSource>();
         beamSound = audioSources[0];
         damagedSound = audioSources[1];
+        powerUpSound = audioSources[2];
         gameOverPanel.SetActive(false);
         pausePanael.SetActive(false);
     }
@@ -69,6 +76,14 @@ public class Player : MonoBehaviour
         if (enemyIdList.Contains(sightObj.GetComponent<Target>().targetedEnemyId) == false)
         {
             targetedEnemy = sightObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
+        }
+
+        ComboBar.value = (float)ComboValue / (float)maxValueOfComboBar;
+        if(ComboValue >= maxValueOfComboBar)
+        {
+            powerUpSound.PlayOneShot(powerUpSound.clip);
+            attackPoint *= 1.05f;
+            ComboValue = 0;
         }
     }
 
@@ -103,8 +118,17 @@ public class Player : MonoBehaviour
                 {
                     if (targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
                     {
-                        bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
-                        if (IsAttackValid == true)
+                        InputedLetterResult IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
+                        if(IsAttackValid.isCorrect == true)
+                        {
+                            ComboValue++;
+                        }
+                        else
+                        {
+                            ComboValue = 0;
+                        }
+
+                        if (IsAttackValid.isAttackValid == true)
                         {
                             Attack();
                         }

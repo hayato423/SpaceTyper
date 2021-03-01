@@ -13,7 +13,7 @@ public class Beam : MonoBehaviour
     [ColorUsage(false,true)]  public Color enemyColor;
     [ColorUsage(false, true)] public Color playerColor;    
     private string targetTagName;
-    private int attackPointOfPlayer = 0;    
+    private float attackPointOfPlayer = 0;    
     // Start is called before the first frame update
     void Awake()
     {
@@ -41,7 +41,7 @@ public class Beam : MonoBehaviour
 
     
 
-    public void Initialize(bool isP, string tag, in GameObject target, int attackPoint = 0)
+    public void Initialize(bool isP, string tag, in GameObject target, float attackPoint = 0)
     {
         isPlayers            = isP;
         targetObj           = target;

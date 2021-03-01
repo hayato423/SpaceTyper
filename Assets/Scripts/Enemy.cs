@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using ILR;
 
 public class Enemy : MonoBehaviour
 {
@@ -45,6 +46,8 @@ public class Enemy : MonoBehaviour
     }
     static CandidatePosition[,] candidatePositins = new CandidatePosition[3, 5];
     static bool isFinishedInitCP;
+
+    
 
     static Enemy()
     {
@@ -172,11 +175,12 @@ public class Enemy : MonoBehaviour
 
     
 
-    public bool IsInputedLetter(char inputedChar)
-    {        
+    public InputedLetterResult IsInputedLetter(char inputedChar)
+    {
+        InputedLetterResult result = new InputedLetterResult(false, false);
         if(wordIndex >= displayWord.Length - 1)
         {
-            return false;
+            return result;
         }
 
 
@@ -184,22 +188,24 @@ public class Enemy : MonoBehaviour
         {
             //文字を黒くする(見えなくする)
             charStatus[wordIndex] = 1;
+            result.isCorrect = true;
         }
         else
         {
             //文字を赤くする
             charStatus[wordIndex] = -1;
             displayWord = displayWord.Remove(wordIndex, 1).Insert(wordIndex, inputedChar.ToString());
+            result.isCorrect = false;
         }
         wordText.text = "";
         for(int i = 0; i < displayWord.Length; i++)
         {
             if(charStatus[i] == 1)
             {
-                wordText.text += "<color=#000000>" + displayWord[i] + "</color>";
+                wordText.text += "<color=#000000>" + displayWord[i] + "</color>";                
             }else if(charStatus[i] == -1)
             {
-                wordText.text += "<color=#FF0000>" + displayWord[i] + "</color>";
+                wordText.text += "<color=#FF0000>" + displayWord[i] + "</color>";                
             }
             else
             {
@@ -210,9 +216,9 @@ public class Enemy : MonoBehaviour
         if(wordIndex == displayWord.Length - 1)
         {
             //攻撃を受ける
-            return true;
+            result.isAttackValid = true;  
         }
-        return false;    
+        return result;    
     }
     
 
