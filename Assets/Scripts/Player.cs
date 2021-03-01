@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using ILR;
 
 public class Player : MonoBehaviour
 {
-    private int attackPoint;
+    private float attackPoint;
     private bool isInputValid;    
     [SerializeField] GameObject sightObj;
     private GameObject targetedEnemy;
@@ -48,11 +49,15 @@ public class Player : MonoBehaviour
     [SerializeField] Image lifeImg;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] GameObject pausePanael;
+    [SerializeField] Slider ComboBar;
+    [SerializeField] int  maxValueOfComboBar = 10;
+    private int ComboValue;
     // Start is called before the first frame update
     void Start()
     {
         isInputValid = true;               
         attackPoint = 1;
+        ComboValue = 0;
         LineUpLifeImg();
         AudioSource[] audioSources = GetComponents<AudioSource>();
         beamSound = audioSources[0];
@@ -69,6 +74,13 @@ public class Player : MonoBehaviour
         if (enemyIdList.Contains(sightObj.GetComponent<Target>().targetedEnemyId) == false)
         {
             targetedEnemy = sightObj.GetComponent<Target>().ChangeRockOnEnemy(enemyIdList, enemys);
+        }
+
+        ComboBar.value = (float)ComboValue / (float)maxValueOfComboBar;
+        if(ComboValue >= maxValueOfComboBar)
+        {
+            attackPoint *= 1.05f;
+            ComboValue = 0;
         }
     }
 
@@ -103,8 +115,17 @@ public class Player : MonoBehaviour
                 {
                     if (targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
                     {
-                        bool IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
-                        if (IsAttackValid == true)
+                        InputedLetterResult IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
+                        if(IsAttackValid.isCorrect == true)
+                        {
+                            ComboValue++;
+                        }
+                        else
+                        {
+                            ComboValue = 0;
+                        }
+
+                        if (IsAttackValid.isAttackValid == true)
                         {
                             Attack();
                         }
