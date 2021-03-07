@@ -143,26 +143,32 @@ public class Enemy : MonoBehaviour
         maxHp = _hp;
         displayWord = _word;
         charStatus = new int[displayWord.Length];
-        GameObject canvas = transform.Find("Canvas").gameObject;
-        GameObject wordObj = canvas.transform.Find("WordText").gameObject;
-        wordText = wordObj.gameObject.GetComponent<Text>();
+        GameObject canvas = transform.Find("Canvas").gameObject;        
         timeSlider = canvas.transform.Find("Time").gameObject.GetComponent<Slider>();
         hpSlider = canvas.transform.Find("HP").gameObject.GetComponent<Slider>();
-        wordText.text = displayWord;
+        InitializeWordPanel(canvas,displayWord);
         timeLimitUpToAttack = _timeLimit;
         wordIndex = 0;
         isActive = false;
-        didAttack = false;        
+        didAttack = false;                
+    }
+
+    void InitializeWordPanel(GameObject canvas, string displayWord)
+    {
+        GameObject wordObj = canvas.transform.Find("WordText").gameObject;
+        wordText = wordObj.gameObject.GetComponent<Text>();
+        displayWord = displayWord.Replace(" ", string.Empty);
         //文字数が8文字以上の場合、パネルを拡張
-        if(wordText.text.Length > 8)
+        if (displayWord.Length > 7)
         {
-            int addWidth = (wordText.text.Length - 8) * 20;
-            wordObj.GetComponent<RectTransform>().sizeDelta = new Vector2(wordObj.GetComponent<RectTransform>().rect.width+addWidth, wordObj.GetComponent<RectTransform>().rect.height);
+            int addWidth = (displayWord.Length - 7) * 20;
+            wordObj.GetComponent<RectTransform>().sizeDelta = new Vector2(wordObj.GetComponent<RectTransform>().rect.width + addWidth, wordObj.GetComponent<RectTransform>().rect.height);
             GameObject panel = canvas.transform.Find("Panel").gameObject;
             panel.GetComponent<RectTransform>().sizeDelta = new Vector2(panel.GetComponent<RectTransform>().rect.width + addWidth, panel.GetComponent<RectTransform>().rect.height);
             GameObject frame = canvas.transform.Find("Frame").gameObject;
             frame.GetComponent<RectTransform>().sizeDelta = new Vector2(frame.GetComponent<RectTransform>().rect.width + addWidth, frame.GetComponent<RectTransform>().rect.height);
-        }        
+        }
+        wordText.text = displayWord;
     }
 
 
@@ -247,6 +253,9 @@ public class Enemy : MonoBehaviour
         wordText.text = displayWord;
         charStatus = new int[displayWord.Length];
         wordIndex = 0;
+        GameObject canvas = transform.Find("Canvas").gameObject;
+        InitializeWordPanel(canvas, displayWord);
+        startTime = Time.time;
     }
 
 

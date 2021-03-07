@@ -94,8 +94,8 @@ public class Player : MonoBehaviour
         {           
             if(e.keyCode == KeyCode.Escape)
             {
-                isInputValid = !isInputValid;
-                if (isInputValid == true)
+                isInputValid = !isInputValid;                
+                if (isInputValid == true)   // ゲーム再開時
                 {
                     Time.timeScale = 1.0f;
                     pausePanael.SetActive(false);
@@ -119,14 +119,8 @@ public class Player : MonoBehaviour
                     if (targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
                     {
                         InputedLetterResult IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
-                        if(IsAttackValid.isCorrect == true)
-                        {
-                            ComboValue++;
-                        }
-                        else
-                        {
-                            ComboValue = 0;
-                        }
+                        if(IsAttackValid.isCorrect == true)  ComboValue++;                        
+                        else  ComboValue = 0;                        
 
                         if (IsAttackValid.isAttackValid == true)
                         {
