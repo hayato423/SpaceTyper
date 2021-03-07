@@ -48,8 +48,7 @@ public class Beam : MonoBehaviour
         destination         = targetObj.transform.position;        
         targetTagName       = tag;
         attackPointOfPlayer = attackPoint;
-        Rotate();                
-        isFinishedInit = true;        
+        Rotate();                        
         if(isPlayers == true)
         {
             meshRend.material.SetColor("_EmissionColor", playerColor);
@@ -58,6 +57,7 @@ public class Beam : MonoBehaviour
         {
             meshRend.material.SetColor("_EmissionColor", enemyColor);
         }
+        isFinishedInit = true;
     }
 
     private void Rotate()
