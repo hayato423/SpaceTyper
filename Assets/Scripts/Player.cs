@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     private AudioSource beamSound;
     private AudioSource damagedSound;
     private AudioSource powerUpSound;
+    private AudioSource typeSound;
     List<uint> enemyIdList;    
     Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
         beamSound = audioSources[0];
         damagedSound = audioSources[1];
         powerUpSound = audioSources[2];
+        typeSound = audioSources[3];
         gameOverPanel.SetActive(false);
         pausePanael.SetActive(false);
     }
@@ -118,6 +120,7 @@ public class Player : MonoBehaviour
                 {
                     if (targetedEnemy != null && keycodeToChar.ContainsKey(e.keyCode))
                     {
+                        typeSound.PlayOneShot(typeSound.clip);
                         InputedLetterResult IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
                         if(IsAttackValid.isCorrect == true)  ComboValue++;                        
                         else  ComboValue = 0;                        
@@ -129,6 +132,8 @@ public class Player : MonoBehaviour
                     }
                 }
             }
+
+
         }
     }
 
