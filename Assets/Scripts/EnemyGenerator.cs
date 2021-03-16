@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
-{
-    [SerializeField] GameObject enemy_prefab;   //敵オブジェクト
-    private uint idNum;        //割り振るid
+{    
+    private uint     idNum;        //割り振るid
     private string[] words;
-    [SerializeField] float interval;
-    [SerializeField] float enemyTimeLimit;
-    [SerializeField] float enemyHp;
-    private float startTime;
-    private int _destroyedEnemyNum;
-    public int destroyedEnemyNum { 
-        get { return _destroyedEnemyNum; }
-        set { _destroyedEnemyNum++; }
-        }
+    private float    startTime;
+    private int      destoroyedEnemyNum = 0;
+    [SerializeField] GameObject enemy_prefab;   //敵オブジェクト
+    [SerializeField] float      interval;
+    [SerializeField] float      enemyTimeLimit;
+    [SerializeField] float      enemyHp;
+    public int DestroyedEnemyNum
+    {
+        get { return destoroyedEnemyNum; }
+        set { destoroyedEnemyNum++; }
+    } 
     public int phase;
     public List<uint> enemyIds;    
     // Start is called before the first frame update
     void Start()
     {        
-        enemyIds = new List<uint>();
+        enemyIds  = new List<uint>();
         startTime = Time.time;        
-        idNum = 1;
-        phase = 1;
-        enemyHp = 1;
+        idNum     = 1;
+        phase     = 1;
+        enemyHp   = 1;
         ReadFile();        
     }
 
@@ -34,11 +35,10 @@ public class EnemyGenerator : MonoBehaviour
     {        
         if(Time.time - startTime > interval)
         {
-            GenerateEnemy();
-            //enemyIds.Add(idNum);            
+            GenerateEnemy();            
             startTime = Time.time;
         }
-        if(destroyedEnemyNum > phase * 10)
+        if(DestroyedEnemyNum > phase * 10)
         {
             phase++;
             enemyHp += phase * 0.1f;
@@ -49,16 +49,15 @@ public class EnemyGenerator : MonoBehaviour
     //敵を生成する
     private void GenerateEnemy()
     {        
-        //半径9.0fの円周上に敵を生成する
+        //円周上に敵を生成する
         float radius = 12.0f;
         float degree = Random.Range(0, 360);
         float x = radius * Mathf.Cos(degree * Mathf.Deg2Rad);
         float y = radius * Mathf.Sin(degree * Mathf.Deg2Rad);
-        float z = 9.0f;
-        string word = GetWord();
+        float z = 9.0f;        
         GameObject enemy = Instantiate(enemy_prefab, new Vector3(x, y, z), Quaternion.identity) as GameObject;
-        enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,word,enemyTimeLimit);
-        
+        string word = GetWord();
+        enemy.GetComponent<Enemy>().Initialize(idNum,enemyHp,word,enemyTimeLimit);        
         idNum++;
     }
 

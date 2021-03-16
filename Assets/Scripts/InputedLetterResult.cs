@@ -1,10 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-
-namespace ILR
+﻿namespace ILR
 {
     public struct InputedLetterResult
     {

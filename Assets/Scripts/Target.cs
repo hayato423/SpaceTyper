@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class Target : MonoBehaviour
 {    
-    private GameObject targetedEnemy;
+    private GameObject    targetedEnemy;
     private RectTransform myRectTransform;
-    private Camera cam;
+    private Camera        cam;
     public uint targetedEnemyId { get; private set; }
     private int enemyIdsIndex;
     // Start is called before the first frame update
@@ -22,6 +22,7 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // ターゲットしている敵に追従
         if (targetedEnemy != null && targetedEnemy.GetComponent<Renderer>().isVisible)
         {
             GetComponent<Image>().enabled = true;                     
@@ -38,14 +39,8 @@ public class Target : MonoBehaviour
     {        
         if(enemyIds.Count > 0)
         {
-            if(enemyIdsIndex+1 > enemyIds.Count - 1)
-            {
-                enemyIdsIndex = 0;
-            }
-            else
-            {
-                enemyIdsIndex++;
-            }
+            if(enemyIdsIndex+1 > enemyIds.Count - 1) enemyIdsIndex = 0;            
+            else                 enemyIdsIndex++;            
             targetedEnemyId = enemyIds[enemyIdsIndex];
         }                
         foreach(GameObject enemy in enemys)
