@@ -6,17 +6,16 @@ using ILR;
 
 public class Player : MonoBehaviour
 {
-    private float attackPoint;
-    private bool isInputValid;    
-    [SerializeField] GameObject sightObj;
-    private GameObject targetedEnemy;
+    private float        attackPoint;
+    private bool         isInputValid;        
+    private GameObject   targetedEnemy;
     private GameObject[] enemys;
-    private AudioSource beamSound;
-    private AudioSource damagedSound;
-    private AudioSource powerUpSound;
-    private AudioSource typeSound;
-    List<uint> enemyIdList;    
-    Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
+    private AudioSource  beamSound;
+    private AudioSource  damagedSound;
+    private AudioSource  powerUpSound;
+    private AudioSource  typeSound;
+    private List<uint>   enemyIdList;    
+    readonly Dictionary<KeyCode, char> keycodeToChar = new Dictionary<KeyCode, char>()
     {
         {KeyCode.A, 'a' },
         {KeyCode.B, 'b' },
@@ -45,6 +44,7 @@ public class Player : MonoBehaviour
         {KeyCode.Y, 'y' },
         {KeyCode.Z, 'z' }
     };
+    [SerializeField] GameObject sightObj;
     [SerializeField] GameObject beam;
     [SerializeField] int life;
     [SerializeField] Canvas canvas;
@@ -89,6 +89,7 @@ public class Player : MonoBehaviour
         }
     }
 
+
     private void OnGUI()
     {
         Event e = Event.current;        
@@ -109,7 +110,6 @@ public class Player : MonoBehaviour
                 }
             }
 
-
             if (isInputValid == true)
             {
                 if (e.keyCode == KeyCode.Tab)
@@ -124,7 +124,6 @@ public class Player : MonoBehaviour
                         InputedLetterResult IsAttackValid = targetedEnemy.GetComponent<Enemy>().IsInputedLetter(keycodeToChar[e.keyCode]);
                         if(IsAttackValid.isCorrect == true)  ComboValue++;                        
                         else  ComboValue = 0;                        
-
                         if (IsAttackValid.isAttackValid == true)
                         {
                             Attack();
@@ -132,17 +131,15 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-
-
         }
     }
+
 
     void Attack()
     {
         beamSound.PlayOneShot(beamSound.clip);
         GameObject beamInstance = Instantiate(beam, transform.position, Quaternion.identity);
         beamInstance.GetComponent<Beam>().Initialize(true, "Enemy", targetedEnemy, attackPoint);
-        //enemy.GetComponent<Enemy>().ReceiveDamage(attackPoint);
     }    
 
 
@@ -156,6 +153,7 @@ public class Player : MonoBehaviour
             instance.name = "Life" + i;
         }
     }
+
 
     public void ReceiveDamage()
     {

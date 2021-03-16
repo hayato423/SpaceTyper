@@ -5,17 +5,17 @@ using UnityEngine;
 public class BGMPlayer : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] AudioSource _bgm;
-    private float _volume;
+    [SerializeField] AudioSource bgm;
+    private float volume;
     void Start()
     {
-        _bgm.loop = true;
-        _volume = 1.0f;
+        bgm.loop = true;
+        volume = 1.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _bgm.volume = _volume;
+        bgm.volume = volume;
     }
 }
